@@ -211,10 +211,10 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
       {/* Lab Navigation Header */}
       <div className="liquid-glass-elevated rounded-3xl p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider">
             Interactive Field Simulations
           </p>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-white mt-0.5">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5">
             Practical Site &amp; Documentation Labs
           </h1>
         </div>
@@ -236,7 +236,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                 className={`px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
                   activeLabTab === tab.id
                     ? 'glass-segment-active'
-                    : 'text-slate-300 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -266,14 +266,14 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                   className={`px-4 py-2 rounded-xl text-xs font-semibold transition-colors ${
                     scenarioIdx === idx
                       ? 'glass-segment-active'
-                      : 'glass-btn-secondary text-slate-300'
+                      : 'glass-btn-secondary text-slate-600'
                   }`}
                 >
                   {scen.title} ({scen.difficulty})
                 </button>
               ))}
             </div>
-            <div className="text-xs font-mono text-emerald-300">
+            <div className="text-xs font-mono text-emerald-600">
               Resolved in Scene:{' '}
               {
                 currentScenario.hotspots.filter((h) => resolvedHotspotIds.includes(h.id))
@@ -297,22 +297,22 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                   setHotspotFeedback(null);
                 }}
               />
-              <p className="text-xs text-slate-300 px-1">{currentScenario.briefing}</p>
+              <p className="text-xs text-slate-600 px-1">{currentScenario.briefing}</p>
             </div>
 
             {/* Right 5 cols: Hazard Control Deck */}
             <div className="lg:col-span-5 liquid-glass rounded-3xl p-6 space-y-4">
               {activeHotspot ? (
                 <>
-                  <div className="text-xs font-mono text-slate-400">
+                  <div className="text-xs font-mono text-slate-500">
                     SELECTED HOTSPOT · {activeHotspot.priorityLevel}
                   </div>
-                  <h3 className="font-display text-lg font-bold text-white">
+                  <h3 className="font-display text-lg font-bold text-slate-900">
                     {activeHotspot.hazardTitle}
                   </h3>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label className="block text-xs font-medium text-slate-600 mb-1.5">
                       1. Identify Primary Consequence if Uncontrolled:
                     </label>
                     <div className="space-y-1.5">
@@ -324,7 +324,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                           className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs transition-colors ${
                             selectedConsequenceIdx === idx
                               ? 'glass-segment-active'
-                              : 'liquid-glass-subtle text-slate-300 hover:border-white/25'
+                              : 'liquid-glass-subtle text-slate-600 hover:border-slate-900/25'
                           }`}
                         >
                           {cOpt}
@@ -334,7 +334,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label className="block text-xs font-medium text-slate-600 mb-1.5">
                       2. Select Appropriate Hierarchy of Controls Action:
                     </label>
                     <div className="space-y-1.5">
@@ -346,10 +346,10 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                           className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs transition-colors ${
                             selectedControlIdx === idx
                               ? 'glass-segment-active'
-                              : 'liquid-glass-subtle text-slate-300 hover:border-white/25'
+                              : 'liquid-glass-subtle text-slate-600 hover:border-slate-900/25'
                           }`}
                         >
-                          <span className="font-mono text-white font-semibold">[{ctrl.hierarchyTier}]</span>{' '}
+                          <span className="font-mono text-slate-900 font-semibold">[{ctrl.hierarchyTier}]</span>{' '}
                           {ctrl.text}
                         </button>
                       ))}
@@ -365,13 +365,13 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                   </button>
 
                   {hotspotFeedback && (
-                    <div className="p-3.5 rounded-xl liquid-glass-recessed border border-white/15 text-xs text-slate-200 leading-relaxed">
+                    <div className="p-3.5 rounded-xl liquid-glass-recessed border border-slate-900/15 text-xs text-slate-700 leading-relaxed">
                       {hotspotFeedback}
                     </div>
                   )}
                 </>
               ) : (
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-slate-600">
                   Click any hazard pin on the industrial scene to inspect and control it.
                 </p>
               )}
@@ -387,21 +387,21 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left 7 cols: Interactive Risk Assessment Form */}
           <form onSubmit={handleSaveRa} className="lg:col-span-7 liquid-glass rounded-3xl p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-900/10 pb-3">
               <div>
-                <p className="text-xs font-mono text-slate-400">TRAINING SIMULATION · NOT AN APPROVED SITE PERMIT</p>
-                <h2 className="font-display text-xl font-bold text-white">
+                <p className="text-xs font-mono text-slate-500">TRAINING SIMULATION · NOT AN APPROVED SITE PERMIT</p>
+                <h2 className="font-display text-xl font-bold text-slate-900">
                   Interactive 5x5 Risk Assessment Builder
                 </h2>
               </div>
-              <span className="text-xs font-mono text-slate-300">
+              <span className="text-xs font-mono text-slate-600">
                 Saved Assessments: {savedRiskAssessments.length}
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="ra-act" className="block text-xs text-slate-300 mb-1">
+                <label htmlFor="ra-act" className="block text-xs text-slate-600 mb-1">
                   Activity / Task
                 </label>
                 <input
@@ -413,7 +413,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                 />
               </div>
               <div>
-                <label htmlFor="ra-pers" className="block text-xs text-slate-300 mb-1">
+                <label htmlFor="ra-pers" className="block text-xs text-slate-600 mb-1">
                   Persons at Risk
                 </label>
                 <input
@@ -428,7 +428,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="ra-haz" className="block text-xs text-slate-300 mb-1">
+                <label htmlFor="ra-haz" className="block text-xs text-slate-600 mb-1">
                   Specific Hazard
                 </label>
                 <input
@@ -440,7 +440,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                 />
               </div>
               <div>
-                <label htmlFor="ra-cons" className="block text-xs text-slate-300 mb-1">
+                <label htmlFor="ra-cons" className="block text-xs text-slate-600 mb-1">
                   Potential Consequence
                 </label>
                 <input
@@ -456,17 +456,17 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
             {/* Initial Risk Sliders */}
             <div className="p-4 rounded-2xl liquid-glass-recessed space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-slate-300">
+                <span className="text-xs font-mono text-slate-600">
                   INITIAL RISK (BEFORE ADDITIONAL ENGINEERING CONTROLS)
                 </span>
-                <span className="text-xs font-mono font-bold text-rose-300 tabular-nums">
+                <span className="text-xs font-mono font-bold text-rose-600 tabular-nums">
                   L{initL} × S{initS} = {initEval.score} ({initEval.level})
                 </span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="init-l" className="block text-xs text-slate-300">
-                    Initial Likelihood (1 Rare → 5 Almost Certain): <strong className="tabular-nums text-white">{initL}</strong>
+                  <label htmlFor="init-l" className="block text-xs text-slate-600">
+                    Initial Likelihood (1 Rare → 5 Almost Certain): <strong className="tabular-nums text-slate-900">{initL}</strong>
                   </label>
                   <input
                     id="init-l"
@@ -479,8 +479,8 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor="init-s" className="block text-xs text-slate-300">
-                    Initial Severity (1 First Aid → 5 Fatal): <strong className="tabular-nums text-white">{initS}</strong>
+                  <label htmlFor="init-s" className="block text-xs text-slate-600">
+                    Initial Severity (1 First Aid → 5 Fatal): <strong className="tabular-nums text-slate-900">{initS}</strong>
                   </label>
                   <input
                     id="init-s"
@@ -498,7 +498,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
             {/* Hierarchy of Controls & Additional Measures */}
             <div className="space-y-3">
               <div>
-                <label htmlFor="ra-tier" className="block text-xs text-slate-300 mb-1">
+                <label htmlFor="ra-tier" className="block text-xs text-slate-600 mb-1">
                   Primary Hierarchy of Controls Tier Applied
                 </label>
                 <select
@@ -525,7 +525,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
               </div>
 
               <div>
-                <label htmlFor="ra-add" className="block text-xs text-slate-300 mb-1">
+                <label htmlFor="ra-add" className="block text-xs text-slate-600 mb-1">
                   Specific Additional Control Measures (Engineering + Admin + PPE)
                 </label>
                 <textarea
@@ -541,17 +541,17 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
             {/* Residual Risk Sliders */}
             <div className="p-4 rounded-2xl liquid-glass-recessed space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-slate-300">
+                <span className="text-xs font-mono text-slate-600">
                   RESIDUAL RISK (AFTER CONTROLS APPLIED — TARGET ALARP)
                 </span>
-                <span className="text-xs font-mono font-bold text-emerald-300 tabular-nums">
+                <span className="text-xs font-mono font-bold text-emerald-600 tabular-nums">
                   L{resL} × S{resS} = {resEval.score} ({resEval.level})
                 </span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="res-l" className="block text-xs text-slate-300">
-                    Residual Likelihood (1–5): <strong className="tabular-nums text-white">{resL}</strong>
+                  <label htmlFor="res-l" className="block text-xs text-slate-600">
+                    Residual Likelihood (1–5): <strong className="tabular-nums text-slate-900">{resL}</strong>
                   </label>
                   <input
                     id="res-l"
@@ -564,8 +564,8 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor="res-s" className="block text-xs text-slate-300">
-                    Residual Severity (1–5): <strong className="tabular-nums text-white">{resS}</strong>
+                  <label htmlFor="res-s" className="block text-xs text-slate-600">
+                    Residual Severity (1–5): <strong className="tabular-nums text-slate-900">{resS}</strong>
                   </label>
                   <input
                     id="res-s"
@@ -581,7 +581,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
             </div>
 
             {raValidationMsg && (
-              <div className="p-3.5 rounded-xl liquid-glass-subtle text-xs text-slate-200">
+              <div className="p-3.5 rounded-xl liquid-glass-subtle text-xs text-slate-700">
                 {raValidationMsg}
               </div>
             )}
@@ -597,27 +597,27 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
           {/* Right 5 cols: Interactive 5x5 Matrix & Saved Records */}
           <div className="lg:col-span-5 space-y-6">
             <div className="liquid-glass rounded-3xl p-6 space-y-4">
-              <div className="text-xs font-mono text-slate-400">5×5 TRAINING RISK MATRIX (L × S)</div>
+              <div className="text-xs font-mono text-slate-500">5×5 TRAINING RISK MATRIX (L × S)</div>
               <div className="grid grid-cols-6 gap-1.5 text-center font-mono text-xs">
-                <div className="p-2 text-slate-400">L \ S</div>
+                <div className="p-2 text-slate-500">L \ S</div>
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <div key={s} className="p-2 text-slate-300 font-bold">
+                  <div key={s} className="p-2 text-slate-600 font-bold">
                     S{s}
                   </div>
                 ))}
                 {[5, 4, 3, 2, 1].map((l) => (
                   <React.Fragment key={l}>
-                    <div className="p-2 text-slate-300 font-bold flex items-center justify-center">
+                    <div className="p-2 text-slate-600 font-bold flex items-center justify-center">
                       L{l}
                     </div>
                     {[1, 2, 3, 4, 5].map((s) => {
                       const val = l * s;
                       const isInit = initL === l && initS === s;
                       const isRes = resL === l && resS === s;
-                      let cellBg = 'bg-emerald-500/12 text-emerald-200 border-emerald-400/25';
-                      if (val >= 15) cellBg = 'bg-rose-500/18 text-rose-200 border-rose-400/35';
+                      let cellBg = 'bg-emerald-500/12 text-emerald-800 border-emerald-400/25';
+                      if (val >= 15) cellBg = 'bg-rose-500/18 text-rose-800 border-rose-400/35';
                       else if (val >= 8) cellBg = 'bg-amber-500/16 text-amber-200 border-amber-400/30';
-                      else if (val >= 4) cellBg = 'bg-white/8 text-slate-200 border-white/15';
+                      else if (val >= 4) cellBg = 'bg-white/8 text-slate-700 border-slate-900/15';
 
                       return (
                         <div
@@ -627,15 +627,15 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                           }`}
                         >
                           <span>{val}</span>
-                          {isInit && <span className="text-[9px] text-white">INIT</span>}
-                          {isRes && <span className="text-[9px] text-emerald-300">RES</span>}
+                          {isInit && <span className="text-[9px] text-slate-900">INIT</span>}
+                          {isRes && <span className="text-[9px] text-emerald-600">RES</span>}
                         </div>
                       );
                     })}
                   </React.Fragment>
                 ))}
               </div>
-              <div className="text-xs text-slate-300 space-y-1 pt-2">
+              <div className="text-xs text-slate-600 space-y-1 pt-2">
                 <div>• 1–3 Low: Acceptable with standard site PPE &amp; supervision</div>
                 <div>• 4–6 Medium: Specific administrative &amp; JSA controls required</div>
                 <div>• 8–12 High: Mandatory Permit to Work (PTW) &amp; Engineering barriers</div>
@@ -645,14 +645,14 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
 
             {savedRiskAssessments.length > 0 && (
               <div className="liquid-glass-subtle rounded-2xl p-5 space-y-3">
-                <div className="text-xs font-mono text-slate-300">
+                <div className="text-xs font-mono text-slate-600">
                   YOUR SAVED RISK ASSESSMENTS ({savedRiskAssessments.length})
                 </div>
                 <div className="space-y-2 max-h-56 overflow-y-auto">
                   {savedRiskAssessments.map((item) => (
                     <div key={item.id} className="p-3 rounded-xl liquid-glass-recessed text-xs space-y-1">
-                      <div className="font-semibold text-white">{item.activity}</div>
-                      <div className="text-slate-300">
+                      <div className="font-semibold text-slate-900">{item.activity}</div>
+                      <div className="text-slate-600">
                         Initial: {item.initialScore} → Residual: {item.residualScore} ({item.controlTier})
                       </div>
                     </div>
@@ -671,7 +671,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left 4 cols: Template Selector */}
           <div className="lg:col-span-4 liquid-glass rounded-3xl p-5 space-y-3">
-            <div className="text-xs font-mono text-slate-400">7 SITE DOCUMENT TEMPLATES</div>
+            <div className="text-xs font-mono text-slate-500">7 SITE DOCUMENT TEMPLATES</div>
             <div className="space-y-2">
               {DOCUMENT_TEMPLATES_DATA.map((tmpl) => {
                 const isSaved = savedDocuments.some((d) => d.templateId === tmpl.id);
@@ -683,7 +683,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                     className={`w-full text-left p-3.5 rounded-2xl transition-all flex items-center justify-between gap-2 ${
                       selectedTemplateId === tmpl.id
                         ? 'glass-segment-active font-semibold'
-                        : 'liquid-glass-subtle text-slate-200 hover:border-white/25'
+                        : 'liquid-glass-subtle text-slate-700 hover:border-slate-900/25'
                     }`}
                   >
                     <div>
@@ -691,7 +691,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                       <div className="text-xs sm:text-sm">{tmpl.title}</div>
                     </div>
                     {isSaved && (
-                      <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-300" />
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
                     )}
                   </button>
                 );
@@ -701,11 +701,11 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
 
           {/* Right 8 cols: Active Document Editor */}
           <form onSubmit={handleSaveDoc} className="lg:col-span-8 liquid-glass rounded-3xl p-6 space-y-5">
-            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-4">
+            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-900/10 pb-4">
               <div>
-                <div className="text-xs font-mono text-slate-400">{activeTemplate.code} · {activeTemplate.disclaimer}</div>
-                <h2 className="font-display text-xl font-bold text-white mt-1">{activeTemplate.title}</h2>
-                <p className="text-xs text-slate-300 mt-1">{activeTemplate.purpose}</p>
+                <div className="text-xs font-mono text-slate-500">{activeTemplate.code} · {activeTemplate.disclaimer}</div>
+                <h2 className="font-display text-xl font-bold text-slate-900 mt-1">{activeTemplate.title}</h2>
+                <p className="text-xs text-slate-600 mt-1">{activeTemplate.purpose}</p>
               </div>
               <button
                 type="button"
@@ -720,7 +720,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
             <div className="space-y-4">
               {activeTemplate.fields.map((field) => (
                 <div key={field.key}>
-                  <label htmlFor={`doc-${field.key}`} className="block text-xs font-medium text-slate-200 mb-1.5">
+                  <label htmlFor={`doc-${field.key}`} className="block text-xs font-medium text-slate-700 mb-1.5">
                     {field.label}
                   </label>
                   <textarea
@@ -738,7 +738,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
             </div>
 
             {docSaveMsg && (
-              <div className="p-3 rounded-xl liquid-glass-subtle border border-emerald-400/40 text-xs text-emerald-200">
+              <div className="p-3 rounded-xl liquid-glass-subtle border border-emerald-400/40 text-xs text-emerald-800">
                 {docSaveMsg}
               </div>
             )}
@@ -761,18 +761,18 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
          =================================================================== */}
       {activeLabTab === 'fire' && (
         <div className="space-y-6">
-          <div className="p-4 rounded-2xl liquid-glass-elevated text-xs sm:text-sm text-slate-200">
-            <strong className="text-white">CRITICAL LIFE-SAFETY DISCLAIMER:</strong> Educational training module only. Portable fire extinguishers are strictly for incipient-stage small fires where a clear escape route is behind you. Never encourage or attempt untrained firefighting or entry into smoke-filled structures.
+          <div className="p-4 rounded-2xl liquid-glass-elevated text-xs sm:text-sm text-slate-700">
+            <strong className="text-slate-900">CRITICAL LIFE-SAFETY DISCLAIMER:</strong> Educational training module only. Portable fire extinguishers are strictly for incipient-stage small fires where a clear escape route is behind you. Never encourage or attempt untrained firefighting or entry into smoke-filled structures.
           </div>
 
           <div className="liquid-glass rounded-3xl p-6 space-y-4">
-            <h2 className="font-display text-xl font-bold text-white">
+            <h2 className="font-display text-xl font-bold text-slate-900">
               Fire Classes, Extinguishing Agents &amp; Lethal Incompatible Combinations
             </h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs sm:text-sm">
                 <thead>
-                  <tr className="border-b border-white/15 text-slate-300 font-mono text-xs">
+                  <tr className="border-b border-slate-900/15 text-slate-600 font-mono text-xs">
                     <th className="py-3 px-3">Fire Class</th>
                     <th className="py-3 px-3">Fuel / Material</th>
                     <th className="py-3 px-3">Correct Extinguisher</th>
@@ -781,13 +781,13 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                 </thead>
                 <tbody className="divide-y divide-white/10">
                   {FIRE_CLASSES_DATA.map((fc) => (
-                    <tr key={fc.fireClass} className="hover:bg-white/5">
-                      <td className="py-3 px-3 font-display font-bold text-white whitespace-nowrap">
+                    <tr key={fc.fireClass} className="hover:bg-slate-900/5">
+                      <td className="py-3 px-3 font-display font-bold text-slate-900 whitespace-nowrap">
                         {fc.fireClass}
                       </td>
-                      <td className="py-3 px-3 text-slate-200">{fc.materials}</td>
-                      <td className="py-3 px-3 text-emerald-300">{fc.bestExtinguisher}</td>
-                      <td className="py-3 px-3 text-rose-300">{fc.neverUse}</td>
+                      <td className="py-3 px-3 text-slate-700">{fc.materials}</td>
+                      <td className="py-3 px-3 text-emerald-600">{fc.bestExtinguisher}</td>
+                      <td className="py-3 px-3 text-rose-600">{fc.neverUse}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -798,8 +798,8 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
           {/* Interactive PASS Sequence & Emergency Response Drill */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="liquid-glass rounded-3xl p-6 space-y-4">
-              <div className="text-xs font-mono text-slate-400">INTERACTIVE EXTINGUISHER DRILL</div>
-              <h3 className="font-display text-lg font-bold text-white">
+              <div className="text-xs font-mono text-slate-500">INTERACTIVE EXTINGUISHER DRILL</div>
+              <h3 className="font-display text-lg font-bold text-slate-900">
                 Click the 4 PASS Steps in Correct Operating Order
               </h3>
               <div className="grid grid-cols-2 gap-2.5">
@@ -822,10 +822,10 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                       className={`p-3.5 rounded-2xl text-left text-xs transition-all ${
                         idx !== -1
                           ? 'glass-segment-active'
-                          : 'liquid-glass-subtle text-slate-200 hover:border-white/25'
+                          : 'liquid-glass-subtle text-slate-700 hover:border-slate-900/25'
                       }`}
                     >
-                      <div className="font-mono font-bold text-white">
+                      <div className="font-mono font-bold text-slate-900">
                         {idx !== -1 ? `Step #${idx + 1}` : 'Select Step'}
                       </div>
                       <div className="mt-1">{step.text}</div>
@@ -835,14 +835,14 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
               </div>
               {passStepOrder.length > 0 && (
                 <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs font-mono text-slate-200">
+                  <span className="text-xs font-mono text-slate-700">
                     Current Sequence: {passStepOrder.join(' → ')}
                     {passStepOrder.join(',') === 'P,A,S1,S2' ? ' (✓ Perfect PASS Order!)' : ''}
                   </span>
                   <button
                     type="button"
                     onClick={() => setPassStepOrder([])}
-                    className="text-xs text-slate-300 underline"
+                    className="text-xs text-slate-600 underline"
                   >
                     Reset Sequence
                   </button>
@@ -851,11 +851,11 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
             </div>
 
             <div className="liquid-glass rounded-3xl p-6 space-y-4">
-              <div className="text-xs font-mono text-slate-400">EMERGENCY ALARM &amp; EVACUATION SCENARIO</div>
-              <h3 className="font-display text-lg font-bold text-white">
+              <div className="text-xs font-mono text-slate-500">EMERGENCY ALARM &amp; EVACUATION SCENARIO</div>
+              <h3 className="font-display text-lg font-bold text-slate-900">
                 Live Substation Switchgear Smoke Detection
               </h3>
-              <p className="text-xs sm:text-sm text-slate-300">
+              <p className="text-xs sm:text-sm text-slate-600">
                 Thick black smoke is pouring from a 11kV High-Voltage Substation room while you are conducting an external inspection. What is your protocol?
               </p>
               <div className="space-y-2">
@@ -878,9 +878,9 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                     className={`w-full text-left p-3.5 rounded-2xl border text-xs transition-all ${
                       fireScenarioChoice === choice.id
                         ? choice.correct
-                          ? 'bg-emerald-500/15 border-emerald-400/50 text-white'
-                          : 'bg-rose-500/15 border-rose-400/50 text-white'
-                        : 'liquid-glass-subtle text-slate-200 hover:border-white/25'
+                          ? 'bg-emerald-500/15 border-emerald-400/50 text-slate-900'
+                          : 'bg-rose-500/15 border-rose-400/50 text-slate-900'
+                        : 'liquid-glass-subtle text-slate-700 hover:border-slate-900/25'
                     }`}
                   >
                     {choice.text}
@@ -888,7 +888,7 @@ export const PracticeLabsView: React.FC<PracticeLabsViewProps> = ({
                 ))}
               </div>
               {fireScenarioChoice && (
-                <div className="p-3 rounded-xl liquid-glass-recessed text-xs text-slate-200">
+                <div className="p-3 rounded-xl liquid-glass-recessed text-xs text-slate-700">
                   {fireScenarioChoice === 'f-1'
                     ? '✓ Correct! Never enter a smoke-filled HV room or use water on electrical switchgear. Raise the alarm, report clearly, and evacuate to Assembly Point.'
                     : '✗ Lethal mistake! Entering an arc-flash smoke-filled 11kV room with water causes instant fatal electrocution.'}

@@ -147,10 +147,10 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md overflow-y-auto"
     >
       <div className="liquid-glass-elevated w-full max-w-2xl rounded-3xl p-6 md:p-8 space-y-6 my-8">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-900/10 pb-4">
           <div>
-            <p className="text-xs font-mono text-slate-400">HSE FIELDREADY · PERSONALIZED ACADEMY SETUP</p>
-            <h2 id="onboarding-modal-title" className="font-display text-2xl font-bold text-white mt-1">
+            <p className="text-xs font-mono text-slate-500">HSE FIELDREADY · PERSONALIZED ACADEMY SETUP</p>
+            <h2 id="onboarding-modal-title" className="font-display text-2xl font-bold text-slate-900 mt-1">
               Configure Your HSE Officer Career Track
             </h2>
           </div>
@@ -162,7 +162,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
                 setAuthNotice(null);
               }}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
-                authTab === 'onboarding' ? 'glass-segment-active font-semibold' : 'text-slate-300 hover:text-white'
+                authTab === 'onboarding' ? 'glass-segment-active font-semibold' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Learning Plan
@@ -176,7 +176,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
                 authTab === 'login' || authTab === 'signup' || authTab === 'reset'
                   ? 'glass-segment-active font-semibold'
-                  : 'text-slate-300 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Account / Sign In
@@ -185,7 +185,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
         </div>
 
         {authNotice && (
-          <div className="p-3 rounded-xl liquid-glass-subtle border border-white/20 text-xs text-slate-200">
+          <div className="p-3 rounded-xl liquid-glass-subtle border border-slate-900/20 text-xs text-slate-700">
             {authNotice}
           </div>
         )}
@@ -194,7 +194,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
           <form onSubmit={handleDemoComplete} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="onb-name" className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label htmlFor="onb-name" className="block text-xs font-medium text-slate-600 mb-1.5">
                   Candidate Full Name
                 </label>
                 <input
@@ -208,7 +208,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               </div>
 
               <div>
-                <label htmlFor="onb-role" className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label htmlFor="onb-role" className="block text-xs font-medium text-slate-600 mb-1.5">
                   Target Career Track (Primary Focus)
                 </label>
                 <input
@@ -216,14 +216,14 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
                   type="text"
                   disabled
                   value="HSE Officer (Newcomer Edition)"
-                  className="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-slate-300 opacity-75 cursor-not-allowed"
+                  className="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm text-slate-600 opacity-75 cursor-not-allowed"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="onb-exp" className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label htmlFor="onb-exp" className="block text-xs font-medium text-slate-600 mb-1.5">
                   1. Current HSE Experience Level
                 </label>
                 <select
@@ -244,7 +244,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               </div>
 
               <div>
-                <label htmlFor="onb-lang" className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label htmlFor="onb-lang" className="block text-xs font-medium text-slate-600 mb-1.5">
                   2. Preferred Explanation Language
                 </label>
                 <select
@@ -266,7 +266,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="onb-eng" className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label htmlFor="onb-eng" className="block text-xs font-medium text-slate-600 mb-1.5">
                   3. Spoken English Communication Level
                 </label>
                 <select
@@ -287,8 +287,8 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               </div>
 
               <div>
-                <label htmlFor="onb-mins" className="block text-xs font-medium text-slate-300 mb-1.5">
-                  4. Daily Study Availability: <span className="font-mono text-white">{prefs.dailyMinutes} mins/day</span>
+                <label htmlFor="onb-mins" className="block text-xs font-medium text-slate-600 mb-1.5">
+                  4. Daily Study Availability: <span className="font-mono text-slate-900">{prefs.dailyMinutes} mins/day</span>
                 </label>
                 <input
                   id="onb-mins"
@@ -304,7 +304,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
             </div>
 
             <div>
-              <label htmlFor="onb-goal" className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label htmlFor="onb-goal" className="block text-xs font-medium text-slate-600 mb-1.5">
                 5. Primary Interview Preparation Goal
               </label>
               <input
@@ -317,10 +317,10 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               />
             </div>
 
-            <div className="p-3.5 rounded-xl liquid-glass-subtle text-xs text-slate-300 flex items-start gap-3">
-              <Sparkles className="w-4 h-4 text-slate-200 shrink-0 mt-0.5" />
+            <div className="p-3.5 rounded-xl liquid-glass-subtle text-xs text-slate-600 flex items-start gap-3">
+              <Sparkles className="w-4 h-4 text-slate-700 shrink-0 mt-0.5" />
               <div>
-                <strong className="text-white">Transparent Storage Notice:</strong> When Supabase cloud credentials are not configured in environment variables, your learning progress, notes, risk assessments, and quiz records are persisted in <span className="text-white underline">Local Demo Mode</span> on this device.
+                <strong className="text-slate-900">Transparent Storage Notice:</strong> When Supabase cloud credentials are not configured in environment variables, your learning progress, notes, risk assessments, and quiz records are persisted in <span className="text-slate-900 underline">Local Demo Mode</span> on this device.
               </div>
             </div>
 
@@ -344,11 +344,11 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
           </form>
         ) : (
           <form onSubmit={handleAuthAction} className="space-y-4">
-            <div className="flex items-center gap-2 text-xs text-slate-300">
+            <div className="flex items-center gap-2 text-xs text-slate-600">
               <button
                 type="button"
                 onClick={() => setAuthTab('login')}
-                className={`underline ${authTab === 'login' ? 'text-white font-semibold' : ''}`}
+                className={`underline ${authTab === 'login' ? 'text-slate-900 font-semibold' : ''}`}
               >
                 Sign In
               </button>
@@ -356,7 +356,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               <button
                 type="button"
                 onClick={() => setAuthTab('signup')}
-                className={`underline ${authTab === 'signup' ? 'text-white font-semibold' : ''}`}
+                className={`underline ${authTab === 'signup' ? 'text-slate-900 font-semibold' : ''}`}
               >
                 Create Account
               </button>
@@ -364,7 +364,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               <button
                 type="button"
                 onClick={() => setAuthTab('reset')}
-                className={`underline ${authTab === 'reset' ? 'text-white font-semibold' : ''}`}
+                className={`underline ${authTab === 'reset' ? 'text-slate-900 font-semibold' : ''}`}
               >
                 Reset Password
               </button>
@@ -372,7 +372,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
 
             {authTab === 'signup' && (
               <div>
-                <label htmlFor="auth-name" className="block text-xs font-medium text-slate-300 mb-1">
+                <label htmlFor="auth-name" className="block text-xs font-medium text-slate-600 mb-1">
                   Full Name
                 </label>
                 <input
@@ -386,7 +386,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
             )}
 
             <div>
-              <label htmlFor="auth-email" className="block text-xs font-medium text-slate-300 mb-1">
+              <label htmlFor="auth-email" className="block text-xs font-medium text-slate-600 mb-1">
                 Email Address
               </label>
               <input
@@ -400,7 +400,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
 
             {(authTab !== 'reset' || passwordRecoveryMode) && (
               <div>
-                <label htmlFor="auth-pass" className="block text-xs font-medium text-slate-300 mb-1">
+                <label htmlFor="auth-pass" className="block text-xs font-medium text-slate-600 mb-1">
                   {passwordRecoveryMode ? 'New Password' : 'Password'}
                 </label>
                 <input

@@ -184,10 +184,10 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
       {/* Top Mode Selector Header */}
       <div className="liquid-glass-elevated rounded-3xl p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider">
             Panel Interview Simulator · 6-Competency Rubric
           </p>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-white mt-0.5">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5">
             AI &amp; Rubric Mock Interview Studio
           </h1>
         </div>
@@ -206,7 +206,7 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
                 className={`px-4 py-2 rounded-full text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                   selectedMode === mode
                     ? 'glass-segment-active'
-                    : 'text-slate-300 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {mode}
@@ -220,7 +220,7 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
         {/* Left 7 Cols: Active Interviewer Prompt & Candidate Response Box */}
         <div className="lg:col-span-7 space-y-6">
           <div className="liquid-glass-elevated rounded-3xl p-6 space-y-5">
-            <div className="flex items-center justify-between text-xs font-mono text-slate-300">
+            <div className="flex items-center justify-between text-xs font-mono text-slate-600">
               <span>INTERVIEW MODE: {activeQuestion.mode}</span>
               <span>
                 QUESTION {(currentQuestionIdx % filteredQuestions.length) + 1} OF{' '}
@@ -229,22 +229,22 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
             </div>
 
             <div className="p-5 rounded-2xl liquid-glass-recessed space-y-2">
-              <div className="text-xs font-mono text-slate-400">PANEL INTERVIEWER ASKS:</div>
-              <h2 className="font-display text-lg sm:text-xl font-bold text-white leading-snug">
+              <div className="text-xs font-mono text-slate-500">PANEL INTERVIEWER ASKS:</div>
+              <h2 className="font-display text-lg sm:text-xl font-bold text-slate-900 leading-snug">
                 “{activeQuestion.question}”
               </h2>
             </div>
 
             <form onSubmit={handleSubmitAnswer} className="space-y-4">
               <div className="flex items-center justify-between">
-                <label htmlFor="interview-answer-box" className="text-xs font-medium text-slate-300">
+                <label htmlFor="interview-answer-box" className="text-xs font-medium text-slate-600">
                   Your Spoken / Written Response:
                 </label>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={handleLoadSampleStrongAnswer}
-                    className="text-xs text-slate-200 hover:text-white underline underline-offset-4"
+                    className="text-xs text-slate-700 hover:text-slate-900 underline underline-offset-4"
                   >
                     Insert Structured Sample
                   </button>
@@ -253,7 +253,7 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
                     onClick={handleVoiceToggle}
                     className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 ${
                       isListening
-                        ? 'bg-rose-500/20 border border-rose-400/50 text-rose-200'
+                        ? 'bg-rose-500/20 border border-rose-400/50 text-rose-800'
                         : 'glass-btn-secondary'
                     }`}
                   >
@@ -264,7 +264,7 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
               </div>
 
               {speechNotice && (
-                <p className="text-xs text-slate-300 font-mono">{speechNotice}</p>
+                <p className="text-xs text-slate-600 font-mono">{speechNotice}</p>
               )}
 
               <textarea
@@ -301,7 +301,7 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
           {/* Session History */}
           {interviewHistory.length > 0 && (
             <div className="liquid-glass rounded-3xl p-5 space-y-3">
-              <div className="text-xs font-mono text-slate-300">
+              <div className="text-xs font-mono text-slate-600">
                 RECENT MOCK INTERVIEW ATTEMPTS ({interviewHistory.length})
               </div>
               <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -311,10 +311,10 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
                     className="p-3 rounded-xl liquid-glass-recessed flex items-center justify-between gap-4 text-xs"
                   >
                     <div className="truncate">
-                      <span className="text-white font-mono">[{item.mode}]</span>{' '}
-                      <span className="text-slate-200">{item.question}</span>
+                      <span className="text-slate-900 font-mono">[{item.mode}]</span>{' '}
+                      <span className="text-slate-700">{item.question}</span>
                     </div>
-                    <div className="font-mono font-bold text-emerald-300 shrink-0 tabular-nums">
+                    <div className="font-mono font-bold text-emerald-600 shrink-0 tabular-nums">
                       {item.score}%
                     </div>
                   </div>
@@ -328,23 +328,23 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
         <div className="lg:col-span-5 liquid-glass rounded-3xl p-6 space-y-5">
           {evalResult ? (
             <>
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-900/10 pb-4">
                 <div>
-                  <div className="text-xs font-mono text-slate-400">
+                  <div className="text-xs font-mono text-slate-500">
                     EVALUATION SOURCE:{' '}
                     {evalResult.evaluationSource === 'ai_server'
                       ? 'SERVER-SIDE GEMINI AI PANEL'
                       : 'STRUCTURED RUBRIC FALLBACK ENGINE'}
                   </div>
-                  <h3 className="font-display text-xl font-bold text-white mt-1">
+                  <h3 className="font-display text-xl font-bold text-slate-900 mt-1">
                     Candidate Performance Report
                   </h3>
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-display font-bold text-white tabular-nums">
+                  <div className="text-3xl font-display font-bold text-slate-900 tabular-nums">
                     {evalResult.overallScore}%
                   </div>
-                  <div className="text-[11px] font-mono text-slate-400">Overall Score</div>
+                  <div className="text-[11px] font-mono text-slate-500">Overall Score</div>
                 </div>
               </div>
 
@@ -360,10 +360,10 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
                 ].map((comp) => (
                   <div key={comp.label} className="space-y-1">
                     <div className="flex justify-between text-xs">
-                      <span className="text-slate-300">{comp.label}</span>
-                      <span className="font-mono text-white tabular-nums">{comp.val}%</span>
+                      <span className="text-slate-600">{comp.label}</span>
+                      <span className="font-mono text-slate-900 tabular-nums">{comp.val}%</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="w-full h-2 rounded-full bg-slate-900/10 overflow-hidden">
                       <div
                         className="h-full glass-progress-fill rounded-full"
                         style={{ width: `${comp.val}%` }}
@@ -376,8 +376,8 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
               {/* Strengths & Missing Points */}
               <div className="space-y-3 pt-2">
                 <div className="p-3.5 rounded-xl liquid-glass-subtle border border-emerald-400/35 space-y-1">
-                  <div className="text-xs font-mono text-emerald-300">STRENGTHS DEMONSTRATED</div>
-                  <ul className="text-xs text-slate-200 space-y-1 list-disc pl-4">
+                  <div className="text-xs font-mono text-emerald-600">STRENGTHS DEMONSTRATED</div>
+                  <ul className="text-xs text-slate-700 space-y-1 list-disc pl-4">
                     {evalResult.strengths.map((s, i) => (
                       <li key={i}>{s}</li>
                     ))}
@@ -386,8 +386,8 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
 
                 {evalResult.missingPoints.length > 0 && (
                   <div className="p-3.5 rounded-xl liquid-glass-subtle border border-rose-400/35 space-y-1">
-                    <div className="text-xs font-mono text-rose-300">MISSING TECHNICAL POINTS</div>
-                    <ul className="text-xs text-slate-200 space-y-1 list-disc pl-4">
+                    <div className="text-xs font-mono text-rose-600">MISSING TECHNICAL POINTS</div>
+                    <ul className="text-xs text-slate-700 space-y-1 list-disc pl-4">
                       {evalResult.missingPoints.map((m, i) => (
                         <li key={i}>{m}</li>
                       ))}
@@ -396,8 +396,8 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
                 )}
 
                 <div className="p-3.5 rounded-xl liquid-glass-recessed space-y-1.5">
-                  <div className="text-xs font-mono text-slate-300">SUGGESTED PROFESSIONAL MODEL ANSWER</div>
-                  <p className="text-xs text-slate-200 leading-relaxed">{activeQuestion.modelAnswer}</p>
+                  <div className="text-xs font-mono text-slate-600">SUGGESTED PROFESSIONAL MODEL ANSWER</div>
+                  <p className="text-xs text-slate-700 leading-relaxed">{activeQuestion.modelAnswer}</p>
                 </div>
 
                 <button
@@ -412,15 +412,15 @@ export const InterviewSimulatorView: React.FC<InterviewSimulatorViewProps> = ({
             </>
           ) : (
             <div className="space-y-4 py-6 text-center">
-              <Sparkles className="w-8 h-8 text-slate-200 mx-auto" />
-              <h3 className="font-display text-lg font-bold text-white">
+              <Sparkles className="w-8 h-8 text-slate-700 mx-auto" />
+              <h3 className="font-display text-lg font-bold text-slate-900">
                 6-Point Panel Rubric Ready
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 Submit your response on the left to receive a detailed evaluation across Technical Accuracy, Safety Knowledge, Answer Completeness, Practical Decision-Making, Communication Clarity, and Structure.
               </p>
-              <div className="p-3.5 rounded-xl liquid-glass-recessed text-left text-xs text-slate-400 space-y-1">
-                <div className="text-slate-200 font-semibold">Expected Criteria for Current Question:</div>
+              <div className="p-3.5 rounded-xl liquid-glass-recessed text-left text-xs text-slate-500 space-y-1">
+                <div className="text-slate-700 font-semibold">Expected Criteria for Current Question:</div>
                 {activeQuestion.expectedKeyPoints.map((pt, idx) => (
                   <div key={idx}>• {pt}</div>
                 ))}

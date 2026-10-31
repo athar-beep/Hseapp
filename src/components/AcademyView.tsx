@@ -132,7 +132,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
         data-testid={`lesson-step-${id}`}
         onClick={() => setActiveStep(step)}
         className={`px-4 py-2 rounded-full text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
-          activeStep === step ? 'glass-segment-active' : 'text-slate-300 hover:text-white'
+          activeStep === step ? 'glass-segment-active' : 'text-slate-600 hover:text-slate-900'
         }`}
       >
         {label}
@@ -153,12 +153,12 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
               <span>Back</span>
             </button>
             <div className="min-w-0">
-              <div className="text-[11px] font-mono text-slate-400">
+              <div className="text-[11px] font-mono text-slate-500">
                 Phase {activeLesson.phaseNumber} · {activeLesson.estimatedMinutes} min
                 {savedScore !== undefined ? ` · Quiz ${savedScore}%` : ''}
                 {isCompleted ? ' · Done' : ''}
               </div>
-              <h2 className="font-display text-base sm:text-lg font-bold text-white line-clamp-2">
+              <h2 className="font-display text-base sm:text-lg font-bold text-slate-900 line-clamp-2">
                 {activeLesson.title}
               </h2>
             </div>
@@ -193,7 +193,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
               onClick={() => onCompleteLesson(activeLesson.id)}
               className={`px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
                 isCompleted
-                  ? 'liquid-glass-subtle border border-emerald-400/40 text-emerald-300'
+                  ? 'liquid-glass-subtle border border-emerald-400/40 text-emerald-600'
                   : 'glass-btn-primary'
               }`}
             >
@@ -215,13 +215,13 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
         {/* STEP 1: LEARN */}
         {activeStep === 1 && (
           <div className="liquid-glass rounded-3xl p-5 sm:p-6 space-y-5">
-            <h3 className="font-display text-xl font-bold text-white">
+            <h3 className="font-display text-xl font-bold text-slate-900">
               {activeLesson.understand.heading}
             </h3>
 
             <div className="space-y-4">
               {activeLesson.understand.englishExplanation.map((para, idx) => (
-                <p key={idx} className="text-sm sm:text-base text-slate-200 leading-relaxed">
+                <p key={idx} className="text-sm sm:text-base text-slate-700 leading-relaxed">
                   {para}
                 </p>
               ))}
@@ -229,9 +229,9 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
 
             {preferredLanguage === 'Roman Urdu' && (
               <div className="liquid-glass-elevated rounded-2xl p-4 space-y-3">
-                <div className="text-[11px] font-mono text-slate-300">ROMAN URDU</div>
+                <div className="text-[11px] font-mono text-slate-600">ROMAN URDU</div>
                 {activeLesson.understand.romanUrduExplanation.map((ruPara, idx) => (
-                  <p key={idx} className="text-sm text-slate-100 leading-relaxed">
+                  <p key={idx} className="text-sm text-slate-800 leading-relaxed">
                     {ruPara}
                   </p>
                 ))}
@@ -241,30 +241,30 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {activeLesson.understand.keyTerms.map((kt) => (
                 <div key={kt.term} className="liquid-glass-subtle p-4 rounded-2xl space-y-1">
-                  <div className="font-display font-semibold text-sm text-white">{kt.term}</div>
-                  <p className="text-xs text-slate-300 leading-relaxed">{kt.meaning}</p>
+                  <div className="font-display font-semibold text-sm text-slate-900">{kt.term}</div>
+                  <p className="text-xs text-slate-600 leading-relaxed">{kt.meaning}</p>
                 </div>
               ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               <div className="p-4 rounded-2xl liquid-glass-subtle space-y-2">
-                <div className="text-[11px] font-mono text-slate-300">SITE EXAMPLE</div>
-                <p className="text-sm text-slate-200 leading-relaxed">
+                <div className="text-[11px] font-mono text-slate-600">SITE EXAMPLE</div>
+                <p className="text-sm text-slate-700 leading-relaxed">
                   {activeLesson.understand.practicalSiteExample}
                 </p>
               </div>
               <div className="p-4 rounded-2xl liquid-glass-elevated space-y-2">
-                <div className="text-[11px] font-mono text-slate-300">SAFETY NOTE</div>
-                <p className="text-sm text-slate-100 leading-relaxed">
+                <div className="text-[11px] font-mono text-slate-600">SAFETY NOTE</div>
+                <p className="text-sm text-slate-800 leading-relaxed">
                   {activeLesson.understand.criticalSafetyNote}
                 </p>
               </div>
             </div>
 
             {/* References — compact one-line rows */}
-            <div className="pt-3 border-t border-white/10 space-y-2">
-              <div className="text-[11px] font-mono text-slate-400">REFERENCES</div>
+            <div className="pt-3 border-t border-slate-900/10 space-y-2">
+              <div className="text-[11px] font-mono text-slate-500">REFERENCES</div>
               {activeLesson.references.map((ref) => (
                 <a
                   key={ref.id}
@@ -274,10 +274,10 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                   className="flex items-center justify-between gap-3 p-3 rounded-xl liquid-glass-recessed text-xs"
                 >
                   <span className="min-w-0">
-                    <span className="block font-semibold text-white truncate">{ref.referenceTitle}</span>
-                    <span className="block text-slate-400 truncate">{ref.sourceOrganization}</span>
+                    <span className="block font-semibold text-slate-900 truncate">{ref.referenceTitle}</span>
+                    <span className="block text-slate-500 truncate">{ref.sourceOrganization}</span>
                   </span>
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                 </a>
               ))}
             </div>
@@ -298,7 +298,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
         {/* STEP 2: VISUAL */}
         {activeStep === 2 && (
           <div className="liquid-glass rounded-3xl p-5 sm:p-6 space-y-5">
-            <p className="text-sm text-slate-300">{activeLesson.visualCaption}</p>
+            <p className="text-sm text-slate-600">{activeLesson.visualCaption}</p>
 
             <LessonVisualDiagram type={activeLesson.visualDiagramType} />
 
@@ -326,11 +326,11 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
         {activeStep === 3 && (
           <div className="liquid-glass rounded-3xl p-5 sm:p-6 space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h3 className="font-display text-lg font-bold text-white">
+              <h3 className="font-display text-lg font-bold text-slate-900">
                 Quiz · {activeLesson.quiz.length} questions
               </h3>
               {quizSubmitted && savedScore !== undefined && (
-                <div className="px-4 py-2 rounded-full liquid-glass-elevated font-mono text-sm font-bold text-emerald-300">
+                <div className="px-4 py-2 rounded-full liquid-glass-elevated font-mono text-sm font-bold text-emerald-600">
                   Score: {savedScore}%
                 </div>
               )}
@@ -341,18 +341,18 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                 const chosenIdx = selectedAnswers[q.id];
                 return (
                   <div key={q.id} className="liquid-glass-subtle rounded-2xl p-4 space-y-3">
-                    <div className="font-display font-semibold text-sm sm:text-base text-white">
+                    <div className="font-display font-semibold text-sm sm:text-base text-slate-900">
                       {qIdx + 1}. {q.question}
                     </div>
                     <div className="space-y-2">
                       {q.options.map((opt, oIdx) => {
                         const isSelected = chosenIdx === oIdx;
-                        let optionStyle = 'liquid-glass-recessed text-slate-200 hover:border-white/25';
+                        let optionStyle = 'liquid-glass-recessed text-slate-700 hover:border-slate-900/25';
                         if (quizSubmitted) {
                           if (opt.isCorrect) {
-                            optionStyle = 'bg-emerald-500/15 border-emerald-400/50 text-emerald-100';
+                            optionStyle = 'bg-emerald-500/15 border-emerald-400/50 text-emerald-900';
                           } else if (isSelected && !opt.isCorrect) {
-                            optionStyle = 'bg-rose-500/15 border-rose-400/50 text-rose-100';
+                            optionStyle = 'bg-rose-500/15 border-rose-400/50 text-rose-900';
                           }
                         } else if (isSelected) {
                           optionStyle = 'glass-segment-active text-white';
@@ -371,22 +371,22 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                             >
                               <span>{opt.text}</span>
                               {quizSubmitted && opt.isCorrect && (
-                                <span className="text-xs font-mono text-emerald-300 shrink-0">✓ Correct</span>
+                                <span className="text-xs font-mono text-emerald-600 shrink-0">✓ Correct</span>
                               )}
                               {quizSubmitted && isSelected && !opt.isCorrect && (
-                                <span className="text-xs font-mono text-rose-300 shrink-0">✗ Wrong</span>
+                                <span className="text-xs font-mono text-rose-600 shrink-0">✗ Wrong</span>
                               )}
                             </button>
                             {quizSubmitted && isSelected && !opt.isCorrect && opt.whyIncorrect && (
-                              <p className="text-xs text-rose-300 pl-3">Why: {opt.whyIncorrect}</p>
+                              <p className="text-xs text-rose-600 pl-3">Why: {opt.whyIncorrect}</p>
                             )}
                           </div>
                         );
                       })}
                     </div>
                     {quizSubmitted && (
-                      <div className="p-3 rounded-xl liquid-glass-recessed border border-white/15 text-xs text-slate-200">
-                        <strong className="text-white">Why:</strong> {q.explanation}
+                      <div className="p-3 rounded-xl liquid-glass-recessed border border-slate-900/15 text-xs text-slate-700">
+                        <strong className="text-slate-900">Why:</strong> {q.explanation}
                       </div>
                     )}
                   </div>
@@ -431,15 +431,15 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
         {/* STEP 4: CHALLENGE */}
         {activeStep === 4 && (
           <div className="liquid-glass rounded-3xl p-5 sm:p-6 space-y-5">
-            <h3 className="font-display text-lg font-bold text-white">
+            <h3 className="font-display text-lg font-bold text-slate-900">
               {activeLesson.practicalChallenge.scenarioTitle}
             </h3>
 
             <div className="p-4 rounded-2xl liquid-glass-elevated space-y-2">
-              <p className="text-sm sm:text-base text-slate-100 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-800 leading-relaxed">
                 {activeLesson.practicalChallenge.siteSituation}
               </p>
-              <p className="text-sm font-semibold text-white pt-1">
+              <p className="text-sm font-semibold text-slate-900 pt-1">
                 {activeLesson.practicalChallenge.promptQuestion}
               </p>
             </div>
@@ -455,9 +455,9 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                       className={`w-full text-left p-4 rounded-2xl border text-xs sm:text-sm transition-all ${
                         isSelected
                           ? opt.isOptimal
-                            ? 'bg-emerald-500/15 border-emerald-400/50 text-white'
-                            : 'bg-rose-500/15 border-rose-400/50 text-white'
-                          : 'liquid-glass-subtle hover:border-white/25 text-slate-200'
+                            ? 'bg-emerald-500/15 border-emerald-400/50 text-slate-900'
+                            : 'bg-rose-500/15 border-rose-400/50 text-slate-900'
+                          : 'liquid-glass-subtle hover:border-slate-900/25 text-slate-700'
                       }`}
                     >
                       {opt.actionText}
@@ -466,8 +466,8 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                       <div
                         className={`p-3.5 rounded-xl text-xs ${
                           opt.isOptimal
-                            ? 'liquid-glass-subtle border border-emerald-400/40 text-emerald-200'
-                            : 'liquid-glass-subtle border border-rose-400/40 text-rose-200'
+                            ? 'liquid-glass-subtle border border-emerald-400/40 text-emerald-800'
+                            : 'liquid-glass-subtle border border-rose-400/40 text-rose-800'
                         }`}
                       >
                         {opt.feedback}
@@ -501,18 +501,18 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
         {/* STEP 5: INTERVIEW + NOTES */}
         {activeStep === 5 && (
           <div className="liquid-glass rounded-3xl p-5 sm:p-6 space-y-5">
-            <h3 className="font-display text-lg font-bold text-white">Interview questions</h3>
+            <h3 className="font-display text-lg font-bold text-slate-900">Interview questions</h3>
 
             <div className="space-y-4">
               {activeLesson.interviewConnection.questions.map((iq, idx) => (
                 <div key={idx} className="liquid-glass-elevated rounded-2xl p-4 space-y-3">
-                  <h4 className="font-display text-base font-bold text-white">“{iq.question}”</h4>
-                  <div className="p-4 rounded-xl liquid-glass-recessed border border-white/15 space-y-1">
-                    <div className="text-[11px] font-mono text-emerald-300">MODEL ANSWER</div>
-                    <p className="text-sm text-slate-200 leading-relaxed">{iq.modelAnswer}</p>
+                  <h4 className="font-display text-base font-bold text-slate-900">“{iq.question}”</h4>
+                  <div className="p-4 rounded-xl liquid-glass-recessed border border-slate-900/15 space-y-1">
+                    <div className="text-[11px] font-mono text-emerald-600">MODEL ANSWER</div>
+                    <p className="text-sm text-slate-700 leading-relaxed">{iq.modelAnswer}</p>
                   </div>
-                  <div className="text-xs text-slate-300">
-                    <strong className="text-white">Tip:</strong> {iq.romanUrduTip}
+                  <div className="text-xs text-slate-600">
+                    <strong className="text-slate-900">Tip:</strong> {iq.romanUrduTip}
                   </div>
                 </div>
               ))}
@@ -521,11 +521,11 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
             {/* Notes */}
             <div className="liquid-glass-subtle rounded-2xl p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <label htmlFor="lesson-note-input" className="text-[11px] font-mono text-slate-300">
+                <label htmlFor="lesson-note-input" className="text-[11px] font-mono text-slate-600">
                   YOUR NOTES
                 </label>
                 {noteSavedFeedback && (
-                  <span className="text-xs text-emerald-300 font-mono">✓ Saved</span>
+                  <span className="text-xs text-emerald-600 font-mono">✓ Saved</span>
                 )}
               </div>
               <textarea
@@ -552,8 +552,8 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
 
             {/* Report an issue */}
             <form onSubmit={handleReportIssue} className="p-4 rounded-2xl liquid-glass-recessed space-y-2">
-              <div className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
-                <Flag className="w-3.5 h-3.5 text-slate-300" />
+              <div className="text-xs font-medium text-slate-600 flex items-center gap-1.5">
+                <Flag className="w-3.5 h-3.5 text-slate-600" />
                 <span>Report an issue in this lesson</span>
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
@@ -572,7 +572,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                   Send
                 </button>
               </div>
-              {issueStatus && <p className="text-xs text-emerald-300">{issueStatus}</p>}
+              {issueStatus && <p className="text-xs text-emerald-600">{issueStatus}</p>}
             </form>
 
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -613,8 +613,8 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3 px-1">
         <div>
-          <h1 className="font-display text-2xl font-bold text-white">Academy</h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <h1 className="font-display text-2xl font-bold text-slate-900">Academy</h1>
+          <p className="text-xs text-slate-500 mt-0.5">
             {completedLessonIds.length}/{totalPublished} lessons done
           </p>
         </div>
@@ -625,7 +625,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
             type="button"
             onClick={() => setSelectedPhase('all')}
             className={`px-4 py-2 rounded-full text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
-              selectedPhase === 'all' ? 'glass-segment-active' : 'text-slate-300 hover:text-white'
+              selectedPhase === 'all' ? 'glass-segment-active' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             All
@@ -636,7 +636,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
               type="button"
               onClick={() => setSelectedPhase(num)}
               className={`px-3.5 py-2 rounded-full text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
-                selectedPhase === num ? 'glass-segment-active' : 'text-slate-300 hover:text-white'
+                selectedPhase === num ? 'glass-segment-active' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               P{num}
@@ -657,16 +657,16 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
             <section key={phase.phaseNumber} className="liquid-glass rounded-3xl p-5 space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="font-display text-base sm:text-lg font-bold text-white truncate">
+                  <h2 className="font-display text-base sm:text-lg font-bold text-slate-900 truncate">
                     {phase.title}
                   </h2>
-                  <p className="text-xs text-slate-400 truncate">{phase.subtitle}</p>
+                  <p className="text-xs text-slate-500 truncate">{phase.subtitle}</p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
-                  <span className="font-mono text-xs text-slate-300">
+                  <span className="font-mono text-xs text-slate-600">
                     {completedInPhase}/{phaseLessons.length}
                   </span>
-                  <div className="w-16 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div className="w-16 h-1.5 rounded-full bg-slate-900/10 overflow-hidden">
                     <div
                       className="h-full rounded-full glass-progress-fill"
                       style={{ width: `${Math.max(4, phasePct)}%` }}
@@ -682,10 +682,10 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                   return (
                     <div key={mod.id} className="space-y-2">
                       <div className="flex items-center justify-between gap-2 px-1">
-                        <h3 className="font-display text-sm font-semibold text-white truncate">
+                        <h3 className="font-display text-sm font-semibold text-slate-900 truncate">
                           {mod.title}
                         </h3>
-                        <span className="text-[11px] font-mono text-slate-400 shrink-0">
+                        <span className="text-[11px] font-mono text-slate-500 shrink-0">
                           {modDone}/{modLessons.length}
                         </span>
                       </div>
@@ -700,18 +700,18 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                               type="button"
                               data-testid={`lesson-card-${les.id}`}
                               onClick={() => openLesson(les)}
-                              className="w-full flex items-center gap-3 p-3.5 rounded-2xl liquid-glass-subtle hover:border-white/25 transition-all text-left"
+                              className="w-full flex items-center gap-3 p-3.5 rounded-2xl liquid-glass-subtle hover:border-slate-900/25 transition-all text-left"
                             >
                               {done ? (
                                 <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                               ) : (
-                                <Play className="w-5 h-5 text-slate-400 shrink-0" />
+                                <Play className="w-5 h-5 text-slate-500 shrink-0" />
                               )}
                               <span className="flex-1 min-w-0">
-                                <span className="block font-display font-semibold text-sm text-white line-clamp-2">
+                                <span className="block font-display font-semibold text-sm text-slate-900 line-clamp-2">
                                   {les.title}
                                 </span>
-                                <span className="block text-[11px] font-mono text-slate-400 mt-0.5">
+                                <span className="block text-[11px] font-mono text-slate-500 mt-0.5">
                                   {les.estimatedMinutes} min
                                   {qScore !== undefined ? ` · Quiz ${qScore}%` : ''}
                                   {done ? ' · Done' : ''}

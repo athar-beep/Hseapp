@@ -145,13 +145,13 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
       {/* Header & Section Tabs */}
       <div className="liquid-glass-elevated rounded-3xl p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider">
             Learner Dossier · Readiness Report · Admin CMS
           </p>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-white mt-0.5">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5">
             {user.name} — HSE Career Dossier
           </h1>
-          <p className="text-xs text-slate-300 mt-0.5">
+          <p className="text-xs text-slate-600 mt-0.5">
             {user.email} · {user.authMode === 'authenticated' ? 'Authenticated Session' : 'Local Persistence Mode'}
           </p>
         </div>
@@ -171,7 +171,7 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
                 className={`px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
                   sectionTab === tab.id
                     ? 'glass-segment-active'
-                    : 'text-slate-300 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -188,8 +188,8 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
       {sectionTab === 'profile' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-5 liquid-glass rounded-3xl p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h2 className="font-display text-lg font-bold text-white">
+            <div className="flex items-center justify-between border-b border-slate-900/10 pb-3">
+              <h2 className="font-display text-lg font-bold text-slate-900">
                 Personalized Learning Settings
               </h2>
               <button
@@ -203,29 +203,29 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
             </div>
 
             <div className="space-y-2.5 text-xs sm:text-sm">
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-slate-400">Target Role:</span>
-                <span className="text-white font-medium">{prefs.targetRole}</span>
+              <div className="flex justify-between py-2 border-b border-slate-900/5">
+                <span className="text-slate-500">Target Role:</span>
+                <span className="text-slate-900 font-medium">{prefs.targetRole}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-slate-400">Experience Level:</span>
-                <span className="text-white font-medium">{prefs.experienceLevel}</span>
+              <div className="flex justify-between py-2 border-b border-slate-900/5">
+                <span className="text-slate-500">Experience Level:</span>
+                <span className="text-slate-900 font-medium">{prefs.experienceLevel}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-slate-400">Preferred Language:</span>
-                <span className="text-white font-medium">{prefs.preferredLanguage}</span>
+              <div className="flex justify-between py-2 border-b border-slate-900/5">
+                <span className="text-slate-500">Preferred Language:</span>
+                <span className="text-slate-900 font-medium">{prefs.preferredLanguage}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-slate-400">English Communication:</span>
-                <span className="text-white font-medium">{prefs.englishLevel}</span>
+              <div className="flex justify-between py-2 border-b border-slate-900/5">
+                <span className="text-slate-500">English Communication:</span>
+                <span className="text-slate-900 font-medium">{prefs.englishLevel}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/5">
-                <span className="text-slate-400">Daily Learning Target:</span>
-                <span className="text-white font-mono">{prefs.dailyMinutes} mins/day</span>
+              <div className="flex justify-between py-2 border-b border-slate-900/5">
+                <span className="text-slate-500">Daily Learning Target:</span>
+                <span className="text-slate-900 font-mono">{prefs.dailyMinutes} mins/day</span>
               </div>
               <div className="py-2">
-                <span className="text-slate-400 block mb-1">Interview Goal:</span>
-                <span className="text-white">{prefs.interviewGoal}</span>
+                <span className="text-slate-500 block mb-1">Interview Goal:</span>
+                <span className="text-slate-900">{prefs.interviewGoal}</span>
               </div>
             </div>
 
@@ -243,11 +243,11 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
 
           <div className="lg:col-span-7 space-y-6">
             <div className="liquid-glass rounded-3xl p-6 space-y-4">
-              <h2 className="font-display text-lg font-bold text-white">
+              <h2 className="font-display text-lg font-bold text-slate-900">
                 Bookmarked Lessons ({bookmarkedLessonIds.length})
               </h2>
               {bookmarkedLessonIds.length === 0 ? (
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   No lessons bookmarked yet. Click “Bookmark” inside any Academy lesson to save it here for quick pre-interview revision.
                 </p>
               ) : (
@@ -261,8 +261,8 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
                         className="p-3.5 rounded-2xl liquid-glass-recessed flex items-center justify-between gap-3"
                       >
                         <div>
-                          <div className="text-xs font-mono text-slate-400">Phase {les.phaseNumber}</div>
-                          <div className="text-sm font-semibold text-white">{les.title}</div>
+                          <div className="text-xs font-mono text-slate-500">Phase {les.phaseNumber}</div>
+                          <div className="text-sm font-semibold text-slate-900">{les.title}</div>
                         </div>
                         <button
                           type="button"
@@ -279,11 +279,11 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
             </div>
 
             <div className="liquid-glass rounded-3xl p-6 space-y-4">
-              <h2 className="font-display text-lg font-bold text-white">
+              <h2 className="font-display text-lg font-bold text-slate-900">
                 Saved Personal Lesson Notes ({Object.keys(lessonNotes).length})
               </h2>
               {Object.keys(lessonNotes).length === 0 ? (
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   Your saved study notes from Step 5 of each lesson will appear here and remain available offline.
                 </p>
               ) : (
@@ -292,10 +292,10 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
                     const les = lessons.find((l) => l.id === lid);
                     return (
                       <div key={lid} className="p-4 rounded-2xl liquid-glass-recessed space-y-1">
-                        <div className="text-xs font-mono text-slate-300">
+                        <div className="text-xs font-mono text-slate-600">
                           {les ? les.title : lid}
                         </div>
-                        <p className="text-xs sm:text-sm text-slate-200">{text}</p>
+                        <p className="text-xs sm:text-sm text-slate-700">{text}</p>
                       </div>
                     );
                   })}
@@ -311,20 +311,20 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
          =================================================================== */}
       {sectionTab === 'report' && (
         <div className="liquid-glass rounded-3xl p-6 md:p-8 space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-900/10 pb-4">
             <div>
-              <div className="text-xs font-mono text-slate-400">
+              <div className="text-xs font-mono text-slate-500">
                 EDUCATIONAL READINESS INDICATOR · NOT A STATUTORY LICENSE
               </div>
-              <h2 className="font-display text-2xl font-bold text-white mt-1">
+              <h2 className="font-display text-2xl font-bold text-slate-900 mt-1">
                 Comprehensive HSE Officer Readiness Report
               </h2>
             </div>
             <div className="text-right">
-              <div className="text-3xl font-display font-bold text-white tabular-nums">
+              <div className="text-3xl font-display font-bold text-slate-900 tabular-nums">
                 {readiness.overallReadinessScore}%
               </div>
-              <div className="text-xs font-mono text-emerald-300">{readiness.readinessBand}</div>
+              <div className="text-xs font-mono text-emerald-600">{readiness.readinessBand}</div>
             </div>
           </div>
 
@@ -339,10 +339,10 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
             ].map((dim) => (
               <div key={dim.title} className="p-4 rounded-2xl liquid-glass-subtle space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-300">{dim.title}</span>
-                  <span className="font-mono font-bold text-white tabular-nums">{dim.score}%</span>
+                  <span className="text-slate-600">{dim.title}</span>
+                  <span className="font-mono font-bold text-slate-900 tabular-nums">{dim.score}%</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                <div className="w-full h-2 rounded-full bg-slate-900/10 overflow-hidden">
                   <div
                     className="h-full glass-progress-fill rounded-full"
                     style={{ width: `${dim.score}%` }}
@@ -353,13 +353,13 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
           </div>
 
           <div className="p-5 rounded-2xl liquid-glass-recessed space-y-2">
-            <div className="text-xs font-mono text-slate-300">PRIORITY AREAS FOR REVISION</div>
+            <div className="text-xs font-mono text-slate-600">PRIORITY AREAS FOR REVISION</div>
             {readiness.weakAreas.length === 0 ? (
-              <p className="text-sm text-emerald-300">
+              <p className="text-sm text-emerald-600">
                 All 6 competency indicators meet target thresholds. You are well-prepared for technical and situational HSE Officer interviews!
               </p>
             ) : (
-              <ul className="text-xs sm:text-sm text-slate-200 list-disc pl-5 space-y-1">
+              <ul className="text-xs sm:text-sm text-slate-700 list-disc pl-5 space-y-1">
                 {readiness.weakAreas.map((w) => (
                   <li key={w}>{w}</li>
                 ))}
@@ -376,17 +376,17 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
         <div className="liquid-glass rounded-3xl p-6 md:p-8 space-y-6">
           {!isAdminVerified ? (
             <form onSubmit={handleVerifyAdmin} className="max-w-md mx-auto space-y-4 py-6">
-              <div className="flex items-center gap-2 text-slate-300 font-mono text-xs">
+              <div className="flex items-center gap-2 text-slate-600 font-mono text-xs">
                 <Lock className="w-4 h-4" />
                 <span>SERVER-SIDE AUTHORIZATION REQUIRED</span>
               </div>
-              <h2 className="font-display text-xl font-bold text-white">
+              <h2 className="font-display text-xl font-bold text-slate-900">
                 HSE FieldReady Curriculum Admin Gate
               </h2>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 Sign in using your Supabase account. The server checks the account's administrator role in the protected user_roles table. There is no shared demo passcode or client-side bypass.
               </p>
-              {adminError && <p className="text-xs text-rose-300">{adminError}</p>}
+              {adminError && <p className="text-xs text-rose-600">{adminError}</p>}
               <button
                 type="submit"
                 className="glass-btn-primary w-full py-2.5 rounded-xl font-bold text-xs"
@@ -396,16 +396,16 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
             </form>
           ) : (
             <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-900/10 pb-4">
                 <div>
-                  <span className="text-xs font-mono text-emerald-300">
+                  <span className="text-xs font-mono text-emerald-600">
                     ✓ SERVER-VERIFIED ADMIN SESSION ACTIVE
                   </span>
-                  <h2 className="font-display text-xl font-bold text-white mt-0.5">
+                  <h2 className="font-display text-xl font-bold text-slate-900 mt-0.5">
                     Curriculum Governance, Content Publishing &amp; Issue Review
                   </h2>
                 </div>
-                <div className="flex items-center gap-4 text-xs font-mono text-slate-300">
+                <div className="flex items-center gap-4 text-xs font-mono text-slate-600">
                   <span>Modules: {modules.length}</span>
                   <span>Lessons: {lessons.length}</span>
                   <span>Glossary: {glossaryTerms.length}</span>
@@ -413,7 +413,7 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
               </div>
 
               {adminMsg && (
-                <div className="p-3 rounded-xl liquid-glass-subtle border border-emerald-400/40 text-xs text-emerald-200">
+                <div className="p-3 rounded-xl liquid-glass-subtle border border-emerald-400/40 text-xs text-emerald-800">
                   {adminMsg}
                 </div>
               )}
@@ -421,7 +421,7 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Publish / Unpublish Modules & Lessons */}
                 <div className="p-5 rounded-2xl liquid-glass-recessed space-y-3">
-                  <div className="text-xs font-mono text-slate-300">
+                  <div className="text-xs font-mono text-slate-600">
                     MANAGE MODULES &amp; LESSONS (PUBLISH / UNPUBLISH)
                   </div>
                   <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -431,8 +431,8 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
                         className="p-3 rounded-xl liquid-glass-subtle flex items-center justify-between gap-2 text-xs"
                       >
                         <div>
-                          <div className="font-semibold text-white">{les.title}</div>
-                          <div className="text-slate-400 font-mono">
+                          <div className="font-semibold text-slate-900">{les.title}</div>
+                          <div className="text-slate-500 font-mono">
                             Phase {les.phaseNumber} · {les.isPublished ? 'Published' : 'Draft / Hidden'}
                           </div>
                         </div>
@@ -441,8 +441,8 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
                           onClick={() => onTogglePublishLesson(les.id)}
                           className={`px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 ${
                             les.isPublished
-                              ? 'liquid-glass-subtle text-emerald-300 border border-emerald-400/35'
-                              : 'liquid-glass-recessed text-slate-400'
+                              ? 'liquid-glass-subtle text-emerald-600 border border-emerald-400/35'
+                              : 'liquid-glass-recessed text-slate-500'
                           }`}
                         >
                           {les.isPublished ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -458,7 +458,7 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
                   onSubmit={handleCreateGlossary}
                   className="p-5 rounded-2xl liquid-glass-recessed space-y-3"
                 >
-                  <div className="text-xs font-mono text-slate-300">
+                  <div className="text-xs font-mono text-slate-600">
                     ADD BILINGUAL GLOSSARY ENTRY
                   </div>
                   <input
@@ -494,7 +494,7 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
 
               {/* Reported Content Issues */}
               <div className="p-5 rounded-2xl liquid-glass-recessed space-y-3">
-                <div className="text-xs font-mono text-slate-300">
+                <div className="text-xs font-mono text-slate-600">
                   REPORTED CURRICULUM &amp; JURISDICTION REVIEW QUEUE ({reportedIssues.length})
                 </div>
                 {reportedIssues.map((iss) => (
@@ -503,10 +503,10 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
                     className="p-3 rounded-xl liquid-glass-subtle flex flex-wrap items-center justify-between gap-2 text-xs"
                   >
                     <div>
-                      <span className="text-white font-mono">[{iss.lessonId}]</span>{' '}
-                      <span className="text-slate-200">{iss.issueText}</span>
+                      <span className="text-slate-900 font-mono">[{iss.lessonId}]</span>{' '}
+                      <span className="text-slate-700">{iss.issueText}</span>
                     </div>
-                    <span className="text-emerald-300 font-mono">{iss.status}</span>
+                    <span className="text-emerald-600 font-mono">{iss.status}</span>
                   </div>
                 ))}
               </div>

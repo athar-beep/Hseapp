@@ -74,23 +74,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     <div className="space-y-4">
       {/* Greeting — one line */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-        <p className="text-sm text-slate-300">
-          Welcome back, <span className="text-white font-semibold">{userName}</span>
+        <p className="text-sm text-slate-600">
+          Welcome back, <span className="text-slate-900 font-semibold">{userName}</span>
         </p>
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full liquid-glass-recessed text-[11px] font-mono text-slate-300">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full liquid-glass-recessed text-[11px] font-mono text-slate-600">
           <Flame className="w-3.5 h-3.5" />
           {streakDays}d streak · {prefs.dailyMinutes}m/day
         </span>
       </div>
 
-      <h1 className="font-display text-2xl font-bold text-white px-1">Master Field Safety.</h1>
+      <h1 className="font-display text-2xl font-bold text-slate-900 px-1">Master Field Safety.</h1>
 
       {/* Readiness — one compact card */}
       <section className="liquid-glass rounded-3xl p-5">
         <div className="flex items-center gap-5">
           <div className="relative w-24 h-24 shrink-0 flex items-center justify-center">
             <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r={radius} stroke="rgba(255,255,255,0.1)" strokeWidth="9" fill="none" />
+              <circle cx="60" cy="60" r={radius} stroke="rgba(15,23,42,0.08)" strokeWidth="9" fill="none" />
               <circle
                 cx="60"
                 cy="60"
@@ -104,22 +104,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               />
               <defs>
                 <linearGradient id="silverGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="100%" stopColor="#94a3b8" />
+                  <stop offset="0%" stopColor="#ffb25e" />
+                  <stop offset="100%" stopColor="#f97316" />
                 </linearGradient>
               </defs>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-mono text-xl font-bold text-white tabular-nums">
+              <span className="font-mono text-xl font-bold text-slate-900 tabular-nums">
                 {readiness.overallReadinessScore}%
               </span>
-              <span className="text-[9px] font-mono uppercase tracking-wider text-slate-400">Ready</span>
+              <span className="text-[9px] font-mono uppercase tracking-wider text-slate-500">Ready</span>
             </div>
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">Your standing</div>
-            <div className="font-display text-lg font-bold text-white truncate">{readiness.readinessBand}</div>
+            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-500">Your standing</div>
+            <div className="font-display text-lg font-bold text-slate-900 truncate">{readiness.readinessBand}</div>
             <div className="grid grid-cols-2 gap-2 mt-3">
               {miniStats.map((s) => (
                 <button
@@ -128,8 +128,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   onClick={() => onNavigateTab(s.target)}
                   className="px-3 py-2 rounded-2xl liquid-glass-recessed text-left"
                 >
-                  <div className="text-[10px] font-mono text-slate-400">{s.label}</div>
-                  <div className="font-mono text-sm font-bold text-white tabular-nums">{s.value}%</div>
+                  <div className="text-[10px] font-mono text-slate-500">{s.label}</div>
+                  <div className="font-mono text-sm font-bold text-slate-900 tabular-nums">{s.value}%</div>
                 </button>
               ))}
             </div>
@@ -140,18 +140,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* Continue — one job: start the next lesson */}
       {nextLesson && (
         <section className="liquid-glass rounded-3xl p-5 space-y-3">
-          <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
             <span>
               CONTINUE · PHASE {nextLesson.phaseNumber} · {nextLesson.estimatedMinutes} MIN
             </span>
-            <span className="text-slate-300">
+            <span className="text-slate-600">
               {completedLessonIds.length}/{publishedLessons.length} done
             </span>
           </div>
-          <h2 className="font-display text-base sm:text-lg font-bold text-white line-clamp-2">
+          <h2 className="font-display text-base sm:text-lg font-bold text-slate-900 line-clamp-2">
             {nextLesson.title}
           </h2>
-          <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+          <div className="h-2 w-full bg-slate-900/10 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full glass-progress-fill"
               style={{ width: `${Math.max(4, readiness.overallCompletion)}%` }}
@@ -195,7 +195,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
       {/* Phases — compact rows */}
       <section className="liquid-glass rounded-3xl p-5 space-y-2">
-        <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 pb-1">
+        <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 pb-1">
           Your phases
         </div>
         {LEARNING_PHASES.map((phase) => {
@@ -209,19 +209,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               onClick={() => onNavigateTab('academy')}
               className="w-full flex items-center gap-3 p-3 rounded-2xl liquid-glass-subtle text-left"
             >
-              <span className="text-[10px] font-mono text-slate-400 shrink-0">P{phase.phaseNumber}</span>
+              <span className="text-[10px] font-mono text-slate-500 shrink-0">P{phase.phaseNumber}</span>
               <span className="flex-1 min-w-0">
-                <span className="block text-xs font-semibold text-white truncate">
+                <span className="block text-xs font-semibold text-slate-900 truncate">
                   {phase.title.replace(/^Phase \d+ — /, '')}
                 </span>
-                <span className="block h-1.5 mt-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <span className="block h-1.5 mt-1.5 w-full bg-slate-900/10 rounded-full overflow-hidden">
                   <span
                     className="block h-full rounded-full glass-progress-fill"
                     style={{ width: `${Math.max(4, pct)}%` }}
                   />
                 </span>
               </span>
-              <span className="text-[11px] font-mono text-slate-300 shrink-0">
+              <span className="text-[11px] font-mono text-slate-600 shrink-0">
                 {doneCount}/{phaseLessons.length}
               </span>
               <ChevronRight className="w-4 h-4 text-slate-500 shrink-0" />
@@ -233,7 +233,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* Focus areas — max 2, only when they exist */}
       {readiness.weakAreas.length > 0 && (
         <section className="liquid-glass rounded-3xl p-5 space-y-2">
-          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 pb-1">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 pb-1">
             Focus now
           </div>
           {readiness.weakAreas.slice(0, 2).map((area, idx) => (
@@ -242,8 +242,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               className="p-3 rounded-2xl liquid-glass-subtle flex items-center justify-between gap-3"
             >
               <span className="flex items-center gap-2.5 min-w-0">
-                <AlertTriangle className="w-4 h-4 text-amber-300 shrink-0" />
-                <span className="text-xs text-slate-200 truncate">{area}</span>
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                <span className="text-xs text-slate-700 truncate">{area}</span>
               </span>
               <button
                 type="button"
@@ -267,8 +267,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             key={b.id}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border ${
               b.unlocked
-                ? 'liquid-glass-subtle border-white/25 text-white font-medium'
-                : 'border-white/10 text-slate-500 opacity-60'
+                ? 'liquid-glass-subtle border-slate-900/25 text-slate-900 font-medium'
+                : 'border-slate-900/10 text-slate-500 opacity-60'
             }`}
           >
             {b.unlocked ? (

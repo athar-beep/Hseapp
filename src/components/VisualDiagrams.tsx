@@ -47,7 +47,7 @@ export const LessonVisualDiagram: React.FC<LessonDiagramProps> = ({ type }) => {
 
     return (
       <div className="space-y-4">
-        <div className="text-xs text-slate-300">
+        <div className="text-xs text-slate-600">
           Click any tier of the inverted Hierarchy Pyramid below to inspect its field reliability and industrial application:
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
@@ -63,20 +63,20 @@ export const LessonVisualDiagram: React.FC<LessonDiagramProps> = ({ type }) => {
                   className={`${widths[idx]} py-3 px-4 rounded-xl text-left transition-all flex items-center justify-between ${
                     isSelected
                       ? 'glass-segment-active scale-[1.01]'
-                      : 'liquid-glass-subtle hover:border-white/25 text-slate-300'
+                      : 'liquid-glass-subtle hover:border-slate-900/25 text-slate-600'
                   }`}
                 >
-                  <span className="font-display font-semibold text-sm text-white">{t.name}</span>
-                  <span className="text-xs font-mono text-slate-300">Inspect →</span>
+                  <span className="font-display font-semibold text-sm text-slate-900">{t.name}</span>
+                  <span className="text-xs font-mono text-slate-600">Inspect →</span>
                 </button>
               );
             })}
           </div>
           <div className="lg:col-span-5 liquid-glass-elevated p-5 rounded-2xl space-y-3">
-            <div className="text-xs font-mono text-slate-400">SELECTED CONTROL TIER</div>
-            <h4 className="font-display text-lg font-semibold text-white">{tiers[selectedTier].name}</h4>
-            <p className="text-sm text-slate-200 leading-relaxed">{tiers[selectedTier].desc}</p>
-            <div className="pt-2 border-t border-white/10 text-xs text-slate-300 font-mono">
+            <div className="text-xs font-mono text-slate-500">SELECTED CONTROL TIER</div>
+            <h4 className="font-display text-lg font-semibold text-slate-900">{tiers[selectedTier].name}</h4>
+            <p className="text-sm text-slate-700 leading-relaxed">{tiers[selectedTier].desc}</p>
+            <div className="pt-2 border-t border-slate-900/10 text-xs text-slate-600 font-mono">
               Reliability: {tiers[selectedTier].reliability}
             </div>
           </div>
@@ -314,16 +314,16 @@ export const InteractiveHazardScene: React.FC<InteractiveHazardSceneProps> = ({
             style={{ left: `${hs.xPercent}%`, top: `${hs.yPercent}%` }}
             className={`-translate-x-1/2 -translate-y-1/2 absolute z-10 min-w-[44px] min-h-[44px] px-3 py-1.5 rounded-xl font-mono text-xs font-semibold flex items-center gap-1.5 transition-transform ${
               isResolved
-                ? 'liquid-glass border border-emerald-400/50 text-emerald-200 shadow-lg'
+                ? 'liquid-glass border border-emerald-400/50 text-emerald-800 shadow-lg'
                 : isActive
                 ? 'glass-btn-primary scale-110 shadow-xl ring-2 ring-white/70'
-                : 'liquid-glass-elevated text-slate-100 hover:scale-105 shadow-lg'
+                : 'liquid-glass-elevated text-slate-800 hover:scale-105 shadow-lg'
             }`}
           >
             {isResolved ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             ) : (
-              <AlertTriangle className="w-4 h-4 text-amber-300 shrink-0" />
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
             )}
             <span className="whitespace-nowrap">
               {isResolved ? `Controlled #${index + 1}` : `Hazard #${index + 1}`}

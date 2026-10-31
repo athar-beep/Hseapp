@@ -259,7 +259,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen industrial-environment-bg text-slate-100 flex flex-col pb-24 md:pb-12">
+    <div className="relative min-h-screen industrial-environment-bg text-slate-800 flex flex-col pb-24 md:pb-12">
       {/* ARCHITECTURAL LIGHT & GEOMETRY REFRACTION BACKDROP (Visible through crystal-clear Liquid Glass) */}
       <div
         aria-hidden="true"
@@ -303,7 +303,7 @@ export default function App() {
       </div>
 
       {/* TOP BAR CONTRACT: Strictly 3 zones separated by gap-8 */}
-      <header className="sticky top-0 z-30 liquid-glass border-b border-white/15 px-4 sm:px-8 py-3 flex items-center justify-between gap-8">
+      <header className="sticky top-0 z-30 liquid-glass border-b border-slate-900/15 px-4 sm:px-8 py-3 flex items-center justify-between gap-8">
         {/* Zone 1: Single text element wordmark */}
         <a
           href="#top"
@@ -311,16 +311,16 @@ export default function App() {
             e.preventDefault();
             setActiveTab('home');
           }}
-          className="font-display text-lg sm:text-xl font-bold tracking-tight text-white whitespace-nowrap shrink-0 flex items-center gap-2.5"
+          className="font-display text-lg sm:text-xl font-bold tracking-tight text-slate-900 whitespace-nowrap shrink-0 flex items-center gap-2.5"
         >
-          <span className="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.9)]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.55)]" />
           <span>HSE FieldReady</span>
         </a>
 
         {/* Zone 2: 5 concise single-line pill navigation links */}
         <nav
           aria-label="Primary Navigation"
-          className="hidden md:flex items-center gap-1.5 p-1 rounded-full liquid-glass-recessed text-xs font-medium text-slate-300"
+          className="hidden md:flex items-center gap-1.5 p-1 rounded-full liquid-glass-recessed text-xs font-medium text-slate-600"
         >
           {[
             { id: 'home' as const, label: 'Home' },
@@ -339,8 +339,8 @@ export default function App() {
               }}
               className={`px-4 py-1.5 rounded-full transition-all whitespace-nowrap shrink-0 ${
                 activeTab === item.id
-                  ? 'glass-segment-active font-semibold text-white'
-                  : 'text-slate-300 hover:text-white'
+                  ? 'glass-segment-active font-semibold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {item.label}
@@ -514,7 +514,7 @@ export default function App() {
       {/* MOBILE BOTTOM NAVIGATION BAR (5 Recommended Destinations: Home, Academy, Practice, Tools, Profile) */}
       <nav
         aria-label="Mobile Bottom Navigation"
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40 liquid-glass-elevated border-t border-white/15 grid grid-cols-5 items-center h-16 px-1"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 liquid-glass-elevated border-t border-slate-900/15 grid grid-cols-5 items-center h-16 px-1"
       >
         {[
           { id: 'home' as const, label: 'Home', icon: Home },
@@ -534,7 +534,7 @@ export default function App() {
                 setActiveTab(tab.id);
               }}
               className={`min-h-[44px] min-w-[44px] flex flex-col items-center justify-center rounded-xl transition-colors ${
-                isActive ? 'text-white font-semibold bg-white/10' : 'text-slate-400 hover:text-white'
+                isActive ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               <Icon className="w-5 h-5" />

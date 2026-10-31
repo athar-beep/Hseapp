@@ -110,10 +110,10 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
       {/* Header & Sub-navigation */}
       <div className="liquid-glass-elevated rounded-3xl p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+          <p className="text-xs font-mono text-slate-500 uppercase tracking-wider">
             Field Reference · Bilingual Glossary · AI Coach
           </p>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-white mt-0.5">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 mt-0.5">
             HSE Officer Toolkit &amp; AI Coach
           </h1>
         </div>
@@ -133,7 +133,7 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
                 className={`px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
                   subTab === t.id
                     ? 'glass-segment-active'
-                    : 'text-slate-300 hover:text-white'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -151,7 +151,7 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
         <div className="space-y-5">
           <div className="liquid-glass rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
@@ -199,8 +199,8 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
                   <div className="space-y-2.5">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="text-xs font-mono text-slate-400">{item.category}</span>
-                        <h3 className="font-display text-lg font-bold text-white mt-0.5">
+                        <span className="text-xs font-mono text-slate-500">{item.category}</span>
+                        <h3 className="font-display text-lg font-bold text-slate-900 mt-0.5">
                           {item.term}
                         </h3>
                       </div>
@@ -211,28 +211,28 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
                         className={`p-2 rounded-xl ${
                           isSaved
                             ? 'glass-segment-active'
-                            : 'glass-btn-secondary text-slate-400 hover:text-white'
+                            : 'glass-btn-secondary text-slate-500 hover:text-slate-900'
                         }`}
                       >
                         <Bookmark className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
-                      <strong className="text-white">Definition:</strong> {item.simpleDefinition}
+                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                      <strong className="text-slate-900">Definition:</strong> {item.simpleDefinition}
                     </p>
 
-                    <div className="p-3 rounded-xl liquid-glass-recessed text-xs text-slate-200 leading-relaxed">
-                      <strong className="text-white">Roman Urdu:</strong> {item.romanUrduExplanation}
+                    <div className="p-3 rounded-xl liquid-glass-recessed text-xs text-slate-700 leading-relaxed">
+                      <strong className="text-slate-900">Roman Urdu:</strong> {item.romanUrduExplanation}
                     </div>
 
-                    <p className="text-xs text-slate-300">
-                      <strong className="text-emerald-300">Industrial Site Example:</strong>{' '}
+                    <p className="text-xs text-slate-600">
+                      <strong className="text-emerald-600">Industrial Site Example:</strong>{' '}
                       {item.industrialExample}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-white/10 text-xs text-slate-400">
+                  <div className="pt-2 border-t border-slate-900/10 text-xs text-slate-500">
                     Related: {item.relatedConcepts.join(' · ')}
                   </div>
                 </div>
@@ -248,14 +248,14 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
       {subTab === 'coach' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-8 liquid-glass rounded-3xl p-6 space-y-4">
-            <div className="border-b border-white/10 pb-3 flex items-center justify-between">
+            <div className="border-b border-slate-900/10 pb-3 flex items-center justify-between">
               <div>
-                <div className="text-xs font-mono text-slate-400">CURRICULUM-GROUNDED HSE ASSISTANT</div>
-                <h2 className="font-display text-xl font-bold text-white">
+                <div className="text-xs font-mono text-slate-500">CURRICULUM-GROUNDED HSE ASSISTANT</div>
+                <h2 className="font-display text-xl font-bold text-slate-900">
                   Interactive HSE Learning Coach
                 </h2>
               </div>
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-slate-500 font-mono">
                 Mode: {preferredLanguage}
               </span>
             </div>
@@ -266,11 +266,11 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
                   key={idx}
                   className={`p-4 rounded-2xl text-xs sm:text-sm whitespace-pre-line leading-relaxed ${
                     msg.role === 'user'
-                      ? 'liquid-glass-elevated text-white ml-8'
-                      : 'liquid-glass-recessed text-slate-100 mr-8'
+                      ? 'liquid-glass-elevated text-slate-900 ml-8'
+                      : 'liquid-glass-recessed text-slate-800 mr-8'
                   }`}
                 >
-                  <div className="text-[11px] font-mono text-slate-400 mb-1">
+                  <div className="text-[11px] font-mono text-slate-500 mb-1">
                     {msg.role === 'user' ? 'YOU' : `HSE COACH (${msg.source || 'verified'})`}
                   </div>
                   {msg.text}
@@ -304,7 +304,7 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
           </div>
 
           <div className="lg:col-span-4 liquid-glass rounded-3xl p-5 space-y-4">
-            <div className="text-xs font-mono text-slate-400">QUICK REVISION PROMPTS</div>
+            <div className="text-xs font-mono text-slate-500">QUICK REVISION PROMPTS</div>
             <div className="space-y-2">
               {[
                 'Explain the 5 tiers of Hierarchy of Controls with a site example.',
@@ -315,14 +315,14 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
                   key={q}
                   type="button"
                   onClick={() => handleSendCoachPrompt(q)}
-                  className="w-full text-left p-3 rounded-xl liquid-glass-subtle hover:border-white/25 text-xs text-slate-200"
+                  className="w-full text-left p-3 rounded-xl liquid-glass-subtle hover:border-slate-900/25 text-xs text-slate-700"
                 >
                   “{q}”
                 </button>
               ))}
             </div>
-            <div className="p-3.5 rounded-xl liquid-glass-recessed text-xs text-slate-400 leading-relaxed">
-              <strong className="text-slate-200">Governance Boundary:</strong> The AI Coach provides general educational safety guidance based on ILO/HSE/OSHA principles and never fabricates national statutes or site permits.
+            <div className="p-3.5 rounded-xl liquid-glass-recessed text-xs text-slate-500 leading-relaxed">
+              <strong className="text-slate-700">Governance Boundary:</strong> The AI Coach provides general educational safety guidance based on ILO/HSE/OSHA principles and never fabricates national statutes or site permits.
             </div>
           </div>
         </div>
@@ -333,18 +333,18 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
          =================================================================== */}
       {subTab === 'roadmap30' && (
         <div className="space-y-6">
-          <div className="p-4 rounded-2xl liquid-glass-subtle text-xs sm:text-sm text-slate-200">
-            <strong className="text-white">Workplace Supervision Notice:</strong> This 30-day newcomer roadmap guides your structured site orientation. All actual workplace tasks must follow your employer’s approved HSE procedures, site induction, and line supervision.
+          <div className="p-4 rounded-2xl liquid-glass-subtle text-xs sm:text-sm text-slate-700">
+            <strong className="text-slate-900">Workplace Supervision Notice:</strong> This 30-day newcomer roadmap guides your structured site orientation. All actual workplace tasks must follow your employer’s approved HSE procedures, site induction, and line supervision.
           </div>
 
           <div className="space-y-5">
             {FIRST_30_DAYS_ROADMAP.map((weekBlock) => (
               <div key={weekBlock.week} className="liquid-glass rounded-3xl p-6 space-y-4">
                 <div>
-                  <h2 className="font-display text-lg sm:text-xl font-bold text-white">
+                  <h2 className="font-display text-lg sm:text-xl font-bold text-slate-900">
                     {weekBlock.week}
                   </h2>
-                  <p className="text-xs text-slate-300 mt-0.5">{weekBlock.focus}</p>
+                  <p className="text-xs text-slate-600 mt-0.5">{weekBlock.focus}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -357,25 +357,25 @@ export const ToolsAndCoachView: React.FC<ToolsAndCoachViewProps> = ({
                         onClick={() => onToggleDay30Task(task.id)}
                         className={`p-4 rounded-2xl border text-left transition-all flex flex-col justify-between gap-3 ${
                           isChecked
-                            ? 'liquid-glass-elevated border-emerald-400/45 text-white'
-                            : 'liquid-glass-subtle text-slate-200 hover:border-white/25'
+                            ? 'liquid-glass-elevated border-emerald-400/45 text-slate-900'
+                            : 'liquid-glass-subtle text-slate-700 hover:border-slate-900/25'
                         }`}
                       >
                         <div className="space-y-1.5">
-                          <div className="flex items-center justify-between text-xs font-mono text-slate-300">
+                          <div className="flex items-center justify-between text-xs font-mono text-slate-600">
                             <span>{task.dayRange}</span>
                             {isChecked ? (
-                              <CheckSquare className="w-4 h-4 text-emerald-300" />
+                              <CheckSquare className="w-4 h-4 text-emerald-600" />
                             ) : (
-                              <Square className="w-4 h-4 text-slate-400" />
+                              <Square className="w-4 h-4 text-slate-500" />
                             )}
                           </div>
-                          <div className="font-display font-semibold text-sm text-white">
+                          <div className="font-display font-semibold text-sm text-slate-900">
                             {task.title}
                           </div>
-                          <p className="text-xs text-slate-300 leading-relaxed">{task.detail}</p>
+                          <p className="text-xs text-slate-600 leading-relaxed">{task.detail}</p>
                         </div>
-                        <div className="text-[11px] font-mono text-emerald-300">
+                        <div className="text-[11px] font-mono text-emerald-600">
                           {isChecked ? '✓ Milestone Practiced' : 'Click to Mark Reviewed'}
                         </div>
                       </button>
