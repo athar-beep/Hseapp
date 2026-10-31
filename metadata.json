@@ -1,0 +1,6 @@
+{
+  "name": "HSE FieldReady",
+  "description": "Learn. Practice. Perform. Become Site-Ready. Production-grade HSE Officer learning, practical hazard & risk labs, and AI interview preparation platform.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
