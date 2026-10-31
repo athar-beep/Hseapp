@@ -5,6 +5,7 @@ import {
   LessonItem,
 } from '../data/curriculumData';
 import { LessonVisualDiagram } from './VisualDiagrams';
+import { supabase } from '../lib/supabase';
 import {
   CheckCircle2,
   Bookmark,
@@ -99,20 +100,26 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
     const handleReportIssue = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!issueText.trim()) return;
+      const payload = {
+        lesson_id: activeLesson.id,
+        issue_text: issueText.trim(),
+        reporter: 'Authenticated Learner',
+      };
       try {
-        const res = await fetch('/api/admin/report-issue', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            lessonId: activeLesson.id,
-            issueText,
-          }),
-        });
-        if (res.ok) {
-          setIssueStatus('Content review notice submitted to HSE Curriculum Admin.');
-          setIssueText('');
-        }
+        if (!supabase) throw new Error('Supabase is not configured.');
+        const { error } = await supabase.from('content_issue_reports').insert(payload);
+        if (error) throw error;
+        setIssueStatus('Content review notice submitted to HSE Curriculum Admin.');
+        setIssueText('');
       } catch {
+        try {
+          const key = 'fieldready_pending_issue_reports';
+          const pending = JSON.parse(localStorage.getItem(key) || '[]') as unknown[];
+          pending.push({ ...payload, savedAt: new Date().toISOString() });
+          localStorage.setItem(key, JSON.stringify(pending));
+        } catch {
+          // Local storage unavailable; nothing more can be done offline.
+        }
         setIssueStatus('Saved locally for next admin sync.');
       }
     };

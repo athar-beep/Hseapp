@@ -87,20 +87,34 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
         setAdminError('Sign in with your registered account before requesting admin access.');
         return;
       }
-      const res = await fetch('/api/admin/verify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      const data = await res.json();
-      if (res.ok && data.authorized === true) {
-        setIsAdminVerified(true);
-        setReportedIssues(data.reportedIssues || []);
-      } else {
-        setAdminError(data.error || 'Your account is not authorized as an administrator.');
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id);
+      if (rolesError) {
+        setAdminError('Unable to verify administrator access.');
+        return;
       }
+      const authorized = (roles || []).some((r) => r.role === 'admin');
+      if (!authorized) {
+        setAdminError('Your account is not authorized as an administrator.');
+        return;
+      }
+      setIsAdminVerified(true);
+      const { data: issues } = await supabase
+        .from('content_issue_reports')
+        .select('id, lesson_id, reporter, issue_text, status, created_at')
+        .order('created_at', { ascending: false });
+      setReportedIssues(
+        (issues || []).map((row) => ({
+          id: row.id,
+          lessonId: row.lesson_id || 'General',
+          reporter: row.reporter || 'Authenticated Learner',
+          issueText: row.issue_text,
+          status: row.status,
+          createdAt: (row.created_at || '').split('T')[0],
+        }))
+      );
     } catch (error) {
       setAdminError(error instanceof Error ? error.message : 'Unable to verify administrator access.');
     }

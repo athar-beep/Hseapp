@@ -228,7 +228,11 @@ export default function App() {
         }
       })
       .catch(() => {
-        // Offline or local fallback
+        // No local server (e.g. inside the mobile app): the app talks to
+        // Supabase directly, so report that topology honestly.
+        if (supabase) {
+          setBackendStatus({ aiMode: 'on_device_rubric_fallback', dbMode: 'supabase_cloud_connected' });
+        }
       });
 
     return () => {
