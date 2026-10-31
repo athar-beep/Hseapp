@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { supabase } from '../lib/supabase';
 import {
   OnboardingPreferences,
   ReadinessBreakdown,
@@ -59,7 +60,6 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
   const [sectionTab, setSectionTab] = useState<'profile' | 'report' | 'admin'>('profile');
 
   // Server-side Admin verification state
-  const [adminPasscode, setAdminPasscode] = useState('');
   const [isAdminVerified, setIsAdminVerified] = useState(false);
   const [adminError, setAdminError] = useState<string | null>(null);
   const [reportedIssues, setReportedIssues] = useState<
@@ -76,25 +76,33 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
   const handleVerifyAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAdminError(null);
+    setIsAdminVerified(false);
+    if (!supabase) {
+      setAdminError('Supabase is not configured. Admin verification is unavailable in local demo mode.');
+      return;
+    }
     try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        setAdminError('Sign in with your registered account before requesting admin access.');
+        return;
+      }
       const res = await fetch('/api/admin/verify', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passcode: adminPasscode }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
       });
       const data = await res.json();
-      if (res.ok && data.authorized) {
+      if (res.ok && data.authorized === true) {
         setIsAdminVerified(true);
         setReportedIssues(data.reportedIssues || []);
       } else {
-        setAdminError(data.error || 'Server verification denied.');
+        setAdminError(data.error || 'Your account is not authorized as an administrator.');
       }
-    } catch {
-      if (adminPasscode === 'FIELDREADY-ADMIN-2026') {
-        setIsAdminVerified(true);
-      } else {
-        setAdminError('Invalid Admin Passcode.');
-      }
+    } catch (error) {
+      setAdminError(error instanceof Error ? error.message : 'Unable to verify administrator access.');
     }
   };
 
@@ -362,38 +370,15 @@ export const ProfileAdminView: React.FC<ProfileAdminViewProps> = ({
                 HSE FieldReady Curriculum Admin Gate
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Admin capabilities are protected via server-side verification (`/api/admin/verify`) and Supabase RLS policies (`public.is_admin(auth.uid())`). For evaluation testing, enter passcode:{' '}
-                <code className="text-white font-mono">FIELDREADY-ADMIN-2026</code>
+                Sign in using your Supabase account. The server checks the account's administrator role in the protected user_roles table. There is no shared demo passcode or client-side bypass.
               </p>
-              <div>
-                <label htmlFor="admin-passcode-input" className="block text-xs text-slate-300 mb-1">
-                  Admin Authorization Passcode
-                </label>
-                <input
-                  id="admin-passcode-input"
-                  type="password"
-                  value={adminPasscode}
-                  onChange={(e) => setAdminPasscode(e.target.value)}
-                  placeholder="Enter FIELDREADY-ADMIN-2026"
-                  className="glass-input w-full px-4 py-2.5 rounded-xl text-sm"
-                />
-              </div>
               {adminError && <p className="text-xs text-rose-300">{adminError}</p>}
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setAdminPasscode('FIELDREADY-ADMIN-2026')}
-                  className="glass-btn-secondary px-3.5 py-2.5 rounded-xl text-xs"
-                >
-                  Auto-Fill Demo Passcode
-                </button>
-                <button
-                  type="submit"
-                  className="glass-btn-primary flex-1 py-2.5 rounded-xl font-bold text-xs"
-                >
-                  Verify With Server
-                </button>
-              </div>
+              <button
+                type="submit"
+                className="glass-btn-primary w-full py-2.5 rounded-xl font-bold text-xs"
+              >
+                Verify My Signed-In Account
+              </button>
             </form>
           ) : (
             <div className="space-y-6">

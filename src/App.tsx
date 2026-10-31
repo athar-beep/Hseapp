@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { supabase } from './lib/supabase';
 import {
   MODULES_DATA,
   LESSONS_DATA,
@@ -44,6 +45,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [targetLessonId, setTargetLessonId] = useState<string | null>(null);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(false);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState<boolean>(false);
   const [isOnline, setIsOnline] = useState<boolean>(
     typeof navigator !== 'undefined' ? navigator.onLine : true
   );
@@ -61,8 +63,8 @@ export default function App() {
     email: string;
     authMode: 'local_demo' | 'authenticated';
   }>({
-    name: 'Muhammad Athar',
-    email: 'muhammadatharhse@gmail.com',
+    name: 'Guest HSE Candidate',
+    email: 'demo@hsefieldready.local',
     authMode: 'local_demo',
   });
 
@@ -75,7 +77,7 @@ export default function App() {
     dailyMinutes: 30,
   });
 
-  const [streakDays] = useState<number>(4);
+  const [streakDays] = useState<number>(0);
 
   // Content State (Editable by Admin CMS)
   const [modules, setModules] = useState<ModuleItem[]>(MODULES_DATA);
@@ -83,56 +85,13 @@ export default function App() {
   const [glossaryTerms, setGlossaryTerms] = useState<GlossaryItem[]>(GLOSSARY_DATA);
 
   // Real User Activity & Progress State
-  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>(['les-101']);
-  const [bookmarkedLessonIds, setBookmarkedLessonIds] = useState<string[]>(['les-102', 'les-202']);
-  const [lessonNotes, setLessonNotes] = useState<Record<string, string>>({
-    'les-101':
-      'Hazard = intrinsic potential for harm; Risk = Likelihood x Severity. Always investigate Near Misses before an LTI happens.',
-  });
-  const [quizScoresByLesson, setQuizScoresByLesson] = useState<Record<string, number>>({
-    'les-101': 80,
-  });
-  const [hazardScoresByScenario, setHazardScoresByScenario] = useState<Record<string, number>>({
-    'scen-1': 67,
-  });
-  const [savedRiskAssessments, setSavedRiskAssessments] = useState<SavedRiskAssessmentRecord[]>([
-    {
-      id: 'ra-seed-1',
-      activity: 'Internal Cleaning & Inspection of Crude Storage Tank T-102',
-      hazard: 'H2S toxic gas pocket & Oxygen deficiency (<19.5% O2)',
-      personsAtRisk: 'Confined Space Entrants & Mechanical Cleaners',
-      consequences: 'Asphyxiation or toxic gas fatality',
-      existingControls: 'Warning signs on manhole cover',
-      initialLikelihood: 4,
-      initialSeverity: 5,
-      initialScore: 20,
-      controlTier: 'Engineering Controls',
-      additionalControls:
-        'Positive LOTO & line blinding, forced air ventilation blower, stratified Top/Mid/Bottom gas test (O2 20.9%, 0% LEL, 0 ppm H2S), Standby Man with entry log, and rescue tripod winch.',
-      residualLikelihood: 1,
-      residualSeverity: 4,
-      residualScore: 4,
-      createdAt: '2026-10-29',
-    },
-  ]);
-  const [savedDocuments, setSavedDocuments] = useState<SavedDocumentRecord[]>([
-    {
-      id: 'doc-seed-ptw',
-      templateId: 'doc-ptw',
-      title: 'Permit to Work (PTW) — Training Template',
-      values: {
-        workDescription: 'Internal baffle weld repair inside Vessel V-204 (Unit 2)',
-        permitType: 'Hot Work Permit + Confined Space Entry Certificate + LOTO #108',
-        energyIsolation:
-          'Inlet/Outlet 6" flanges blinded (Spade #S-12); Agitator MCC Breaker 4B locked out + Zero Energy Try-Out passed.',
-        gasTestResults:
-          'O2: 20.9% | LEL: 0.0% | H2S: 0 ppm | CO: 0 ppm (Tested Top/Middle/Bottom at 07:45 by AGT)',
-        mandatoryControls:
-          'Air mover blower active; Fire Watcher + Standby Man posted with log; 2x CO2/Dry Powder extinguishers; Tripod winch rigged.',
-      },
-      updatedAt: '08:15 AM',
-    },
-  ]);
+  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
+  const [bookmarkedLessonIds, setBookmarkedLessonIds] = useState<string[]>([]);
+  const [lessonNotes, setLessonNotes] = useState<Record<string, string>>({});
+  const [quizScoresByLesson, setQuizScoresByLesson] = useState<Record<string, number>>({});
+  const [hazardScoresByScenario, setHazardScoresByScenario] = useState<Record<string, number>>({});
+  const [savedRiskAssessments, setSavedRiskAssessments] = useState<SavedRiskAssessmentRecord[]>([]);
+  const [savedDocuments, setSavedDocuments] = useState<SavedDocumentRecord[]>([]);
   const [interviewHistory, setInterviewHistory] = useState<
     {
       id: string;
@@ -142,19 +101,9 @@ export default function App() {
       source: 'ai_server' | 'rubric_fallback';
       date: string;
     }[]
-  >([
-    {
-      id: 'int-seed-1',
-      mode: 'Beginner',
-      question:
-        'What is the difference between a Hazard and a Risk, and how do you apply the Hierarchy of Controls to manage them?',
-      score: 78,
-      source: 'rubric_fallback',
-      date: 'Yesterday',
-    },
-  ]);
-  const [bookmarkedTermIds, setBookmarkedTermIds] = useState<string[]>(['gl-1', 'gl-2']);
-  const [completedDay30Ids, setCompletedDay30Ids] = useState<string[]>(['d30-1', 'd30-2']);
+  >([]);
+  const [bookmarkedTermIds, setBookmarkedTermIds] = useState<string[]>([]);
+  const [completedDay30Ids, setCompletedDay30Ids] = useState<string[]>([]);
 
   // Load persisted state from localStorage on mount
   useEffect(() => {
@@ -217,6 +166,52 @@ export default function App() {
     bookmarkedTermIds,
     completedDay30Ids,
   ]);
+
+  // Restore the real Supabase session. Local demo state is never treated as a cloud login.
+  useEffect(() => {
+    if (!supabase) {
+      setUser((current) => ({ ...current, authMode: 'local_demo' }));
+      return;
+    }
+
+    let mounted = true;
+    const applyUser = (authUser: { email?: string; user_metadata?: Record<string, unknown> } | null) => {
+      if (!mounted) return;
+      if (!authUser) {
+        setUser((current) => ({ ...current, authMode: 'local_demo' }));
+        return;
+      }
+      const displayName = authUser.user_metadata?.full_name;
+      setUser({
+        name: typeof displayName === 'string' && displayName.trim()
+          ? displayName
+          : authUser.email?.split('@')[0] || 'HSE Candidate',
+        email: authUser.email || '',
+        authMode: 'authenticated',
+      });
+    };
+
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        applyUser(null);
+        return;
+      }
+      applyUser(data.session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+        setIsOnboardingOpen(true);
+      }
+      applyUser(session?.user ?? null);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // Monitor Online/Offline and check backend status
   useEffect(() => {
@@ -485,6 +480,8 @@ export default function App() {
             lessonNotes={lessonNotes}
             onOpenPreferencesModal={() => setIsOnboardingOpen(true)}
             onLogoutToDemo={() => {
+              void supabase?.auth.signOut();
+              setIsPasswordRecovery(false);
               setUser({
                 name: 'Guest HSE Candidate',
                 email: 'demo@hsefieldready.local',
@@ -550,9 +547,11 @@ export default function App() {
         isOpen={isOnboardingOpen}
         initialPrefs={prefs}
         currentUser={user}
+        passwordRecoveryMode={isPasswordRecovery}
         onSaveComplete={(updatedPrefs, updatedUser) => {
           setPrefs(updatedPrefs);
           setUser(updatedUser);
+          setIsPasswordRecovery(false);
           setIsOnboardingOpen(false);
         }}
         onClose={() => setIsOnboardingOpen(false)}

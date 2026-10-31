@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { OnboardingPreferences } from '../utils/hseLogic';
 import { Sparkles } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface OnboardingAuthModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface OnboardingAuthModalProps {
     user: { name: string; email: string; authMode: 'local_demo' | 'authenticated' }
   ) => void;
   onClose?: () => void;
+  passwordRecoveryMode?: boolean;
 }
 
 export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
@@ -23,36 +25,105 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
   currentUser,
   onSaveComplete,
   onClose,
+  passwordRecoveryMode = false,
 }) => {
   const [authTab, setAuthTab] = useState<'onboarding' | 'login' | 'signup' | 'reset'>('onboarding');
   const [name, setName] = useState(currentUser.name || 'Muhammad Athar');
   const [email, setEmail] = useState(currentUser.email || 'candidate@hsefieldready.org');
   const [password, setPassword] = useState('');
   const [authNotice, setAuthNotice] = useState<string | null>(null);
+  const [isAuthBusy, setIsAuthBusy] = useState(false);
+
+  useEffect(() => {
+    if (passwordRecoveryMode) {
+      setAuthTab('reset');
+      setAuthNotice('Choose a new password for your account.');
+    }
+  }, [passwordRecoveryMode]);
 
   const [prefs, setPrefs] = useState<OnboardingPreferences>(initialPrefs);
 
   if (!isOpen) return null;
 
-  const handleAuthAction = (e: React.FormEvent) => {
+  const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !email.includes('@')) {
-      setAuthNotice('Please enter a valid professional email address.');
+    setAuthNotice(null);
+
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      setAuthNotice('Please enter a valid email address.');
       return;
     }
-    if (authTab === 'reset') {
-      setAuthNotice(`Password recovery instructions generated for ${email.trim()}. You can now continue to your learning profile.`);
+    if (!supabase) {
+      setAuthNotice('Cloud authentication is not configured. Use the clearly labelled Local Demo learning plan, or configure Supabase first.');
       return;
     }
-    if (!password || password.length < 4) {
-      setAuthNotice('Please enter a password (minimum 4 characters) to sign in or register.');
-      return;
+
+    setIsAuthBusy(true);
+    try {
+      if (authTab === 'reset' && !passwordRecoveryMode) {
+        const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+          redirectTo: window.location.origin,
+        });
+        if (error) throw error;
+        setAuthNotice('Password reset email requested. Open the email on this site and follow the recovery link.');
+        return;
+      }
+
+      if (password.length < 8) {
+        setAuthNotice('Use a password of at least 8 characters.');
+        return;
+      }
+
+      if (passwordRecoveryMode) {
+        const { data, error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        onSaveComplete(prefs, {
+          name: String(data.user.user_metadata?.full_name || name.trim() || 'HSE Candidate'),
+          email: data.user.email || normalizedEmail,
+          authMode: 'authenticated',
+        });
+        setPassword('');
+        return;
+      }
+
+      if (authTab === 'signup') {
+        const { data, error } = await supabase.auth.signUp({
+          email: normalizedEmail,
+          password,
+          options: { data: { full_name: name.trim() || 'HSE Candidate' } },
+        });
+        if (error) throw error;
+        if (!data.session || !data.user) {
+          setAuthNotice('Account request accepted. Check your email to confirm the account, then sign in. No active session was created yet.');
+          setAuthTab('login');
+          return;
+        }
+        onSaveComplete(prefs, {
+          name: String(data.user.user_metadata?.full_name || name.trim() || 'HSE Candidate'),
+          email: data.user.email || normalizedEmail,
+          authMode: 'authenticated',
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+      });
+      if (error) throw error;
+      if (!data.session || !data.user) throw new Error('Supabase did not return an authenticated session.');
+      onSaveComplete(prefs, {
+        name: String(data.user.user_metadata?.full_name || name.trim() || 'HSE Candidate'),
+        email: data.user.email || normalizedEmail,
+        authMode: 'authenticated',
+      });
+      setPassword('');
+    } catch (error) {
+      setAuthNotice(error instanceof Error ? error.message : 'Authentication failed. Please try again.');
+    } finally {
+      setIsAuthBusy(false);
     }
-    onSaveComplete(prefs, {
-      name: name.trim() || 'HSE Candidate',
-      email: email.trim(),
-      authMode: 'authenticated',
-    });
   };
 
   const handleDemoComplete = (e: React.FormEvent) => {
@@ -327,17 +398,17 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               />
             </div>
 
-            {authTab !== 'reset' && (
+            {(authTab !== 'reset' || passwordRecoveryMode) && (
               <div>
                 <label htmlFor="auth-pass" className="block text-xs font-medium text-slate-300 mb-1">
-                  Password
+                  {passwordRecoveryMode ? 'New Password' : 'Password'}
                 </label>
                 <input
                   id="auth-pass"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder={passwordRecoveryMode ? 'Enter a new password (8+ characters)' : '8+ characters'}
                   className="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm"
                 />
               </div>
@@ -353,9 +424,10 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               </button>
               <button
                 type="submit"
-                className="glass-btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold"
+                disabled={isAuthBusy}
+                className="glass-btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold disabled:opacity-50"
               >
-                {authTab === 'login' ? 'Sign In' : authTab === 'signup' ? 'Create Account' : 'Send Password Reset'}
+                {isAuthBusy ? 'Please wait...' : passwordRecoveryMode ? 'Update Password' : authTab === 'login' ? 'Sign In' : authTab === 'signup' ? 'Create Account' : 'Send Password Reset'}
               </button>
             </div>
           </form>

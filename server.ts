@@ -31,7 +31,6 @@ function getGenAIClient(): GoogleGenAI | null {
 
 // Server-side in-memory store for Admin CMS modifications & reported content issues
 const adminStore = {
-  passcode: process.env.HSE_ADMIN_PASSCODE || 'FIELDREADY-ADMIN-2026',
   reportedIssues: [
     {
       id: 'iss-1',
@@ -246,19 +245,59 @@ Rules:
 });
 
 // 4. Server-Side Verified Admin Authorization & Content Management Endpoints
-app.post('/api/admin/verify', (req, res) => {
-  const { passcode } = req.body as { passcode?: string };
-  if (passcode && passcode.trim() === adminStore.passcode) {
-    res.json({
-      authorized: true,
-      role: 'admin',
-      token: 'VERIFIED_SERVER_ADMIN_SESSION_TOKEN',
-      reportedIssues: adminStore.reportedIssues,
+app.post('/api/admin/verify', async (req, res) => {
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+  const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+  const match = req.header('authorization')?.match(/^Bearer\s+(.+)$/i);
+  const accessToken = match?.[1]?.trim();
+
+  if (!supabaseUrl || !anonKey) {
+    res.status(503).json({ authorized: false, error: 'Supabase server verification is not configured.' });
+    return;
+  }
+  if (!accessToken) {
+    res.status(401).json({ authorized: false, error: 'A valid signed-in session is required.' });
+    return;
+  }
+
+  try {
+    const authResponse = await fetch(`${supabaseUrl.replace(/\/$/, '')}/auth/v1/user`, {
+      headers: { apikey: anonKey, Authorization: `Bearer ${accessToken}` },
+      signal: AbortSignal.timeout(5000),
     });
-  } else {
-    res.status(403).json({
+    if (!authResponse.ok) {
+      res.status(401).json({ authorized: false, error: 'Supabase session is invalid or expired.' });
+      return;
+    }
+    const authUser = await authResponse.json() as { id?: string };
+    if (!authUser.id) {
+      res.status(401).json({ authorized: false, error: 'Supabase did not return a valid user.' });
+      return;
+    }
+
+    const rolesUrl = new URL(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/user_roles`);
+    rolesUrl.searchParams.set('user_id', `eq.${authUser.id}`);
+    rolesUrl.searchParams.set('role', 'eq.admin');
+    rolesUrl.searchParams.set('select', 'role');
+    const roleResponse = await fetch(rolesUrl, {
+      headers: { apikey: anonKey, Authorization: `Bearer ${accessToken}` },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!roleResponse.ok) {
+      res.status(503).json({ authorized: false, error: 'Unable to verify the account role. Check the user_roles RLS policy.' });
+      return;
+    }
+    const roles = await roleResponse.json() as Array<{ role: string }>;
+    if (!Array.isArray(roles) || !roles.some((entry) => entry.role === 'admin')) {
+      res.status(403).json({ authorized: false, error: 'This account has not been assigned the administrator role.' });
+      return;
+    }
+
+    res.json({ authorized: true, role: 'admin', reportedIssues: adminStore.reportedIssues });
+  } catch (error) {
+    res.status(503).json({
       authorized: false,
-      error: 'Invalid Admin Passcode. Server-side authorization denied.',
+      error: error instanceof Error ? error.message : 'Administrator verification failed.',
     });
   }
 });

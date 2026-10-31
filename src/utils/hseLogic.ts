@@ -1,26 +1,70 @@
 /**
- * Pure decoupled business logic for HSE FieldReady:
- * - 5x5 Risk Assessment Matrix calculations & Hierarchy of Controls validation
- * - Multi-dimensional HSE Readiness Score computation
- * - Deterministic Rubric-based Interview Answer Evaluator (used as transparent fallback & baseline)
- * - Personalized Learning Plan generation from user onboarding preferences
+ * HSE FieldReady shared domain logic.
+ *
+ * IMPORTANT: The default 5x5 bands below are illustrative training defaults.
+ * They are not a substitute for an employer's approved risk matrix, permit
+ * system, or local legal requirements.
  */
 
 export type RiskLevelCategory = 'Low' | 'Medium' | 'High' | 'Critical';
+export type ControlTier =
+  | 'Elimination'
+  | 'Substitution'
+  | 'Engineering Controls'
+  | 'Administrative Controls'
+  | 'PPE';
+
+export interface RiskMatrixConfig {
+  mediumMin: number;
+  highMin: number;
+  criticalMin: number;
+}
+
+export const DEFAULT_TRAINING_RISK_MATRIX: Readonly<RiskMatrixConfig> = {
+  mediumMin: 4,
+  highMin: 8,
+  criticalMin: 15,
+};
 
 export interface RiskEvaluation {
   score: number;
   level: RiskLevelCategory;
   actionRequired: string;
-  permitRequired: boolean;
+  /**
+   * null means a numeric risk score cannot determine permit applicability.
+   * Check task-specific triggers and the approved site permit-to-work matrix.
+   */
+  permitRequired: boolean | null;
+  permitAssessment: string;
+}
+
+export interface ResidualRiskPolicy {
+  /** Risk bands accepted by this illustrative training exercise. */
+  acceptedResidualLevels?: RiskLevelCategory[];
+  matrix?: RiskMatrixConfig;
+}
+
+export interface ResidualRiskValidation {
+  isValid: boolean;
+  initialScore: number;
+  residualScore: number;
+  reductionPercent: number;
+  initialLevel: RiskLevelCategory;
+  residualLevel: RiskLevelCategory;
+  requiresSiteReview: boolean;
+  feedback: string;
 }
 
 export interface ReadinessInput {
-  quizScores: number[]; // Array of 0-100 scores
+  quizScores: number[];
   riskAssessmentsCompleted: number;
-  hazardScenariosScores: number[]; // Array of 0-100 scores
-  interviewScores: number[]; // Array of 0-100 scores
+  /** Evaluated risk assessment quality scores (0–100), not just record counts. */
+  riskAssessmentScores?: number[];
+  hazardScenariosScores: number[];
+  interviewScores: number[];
   documentsCompleted: number;
+  /** Evaluated documentation quality scores (0–100), not just record counts. */
+  documentScores?: number[];
   completedLessonsCount: number;
   totalLessonsCount: number;
 }
@@ -33,8 +77,15 @@ export interface ReadinessBreakdown {
   documentation: number;
   overallCompletion: number;
   overallReadinessScore: number;
-  readinessBand: 'Foundation Stage' | 'Developing Officer' | 'Field Competent' | 'Site & Interview Ready';
+  readinessBand:
+    | 'Foundation Stage'
+    | 'Developing Officer'
+    | 'Field Competent'
+    | 'Site & Interview Ready';
   weakAreas: string[];
+  evidenceCoverage: number;
+  isAssessmentComplete: boolean;
+  readinessDisclaimer: string;
 }
 
 export interface InterviewCompetencyScores {
@@ -64,171 +115,236 @@ export interface OnboardingPreferences {
   dailyMinutes: number;
 }
 
-/**
- * 1. 5x5 Risk Matrix Calculation (Likelihood 1-5 x Severity 1-5)
- */
-export function calculateRiskScore(likelihood: number, severity: number): RiskEvaluation {
-  const clampedL = Math.max(1, Math.min(5, Math.round(likelihood)));
-  const clampedS = Math.max(1, Math.min(5, Math.round(severity)));
-  const score = clampedL * clampedS;
+function clampInteger(value: number, min: number, max: number, label: string): number {
+  if (!Number.isFinite(value)) {
+    throw new RangeError(`${label} must be a finite number.`);
+  }
+  return Math.max(min, Math.min(max, Math.round(value)));
+}
 
-  if (score >= 15) {
-    return {
-      score,
-      level: 'Critical',
-      actionRequired: 'STOP WORK IMMEDIATELY. Task cannot proceed until risk is eliminated or engineered down to ALARP.',
-      permitRequired: true,
-    };
+function validateMatrix(matrix: RiskMatrixConfig): void {
+  const values = [matrix.mediumMin, matrix.highMin, matrix.criticalMin];
+  if (
+    values.some((value) => !Number.isInteger(value) || value < 2 || value > 25) ||
+    !(matrix.mediumMin < matrix.highMin && matrix.highMin < matrix.criticalMin)
+  ) {
+    throw new RangeError(
+      'Risk matrix thresholds must be integer values from 2 to 25 in ascending order.'
+    );
   }
-  if (score >= 8) {
-    return {
-      score,
-      level: 'High',
-      actionRequired: 'Mandatory Permit to Work (PTW), formal JSA, engineering controls, and supervisor sign-off required before work.',
-      permitRequired: true,
-    };
-  }
-  if (score >= 4) {
-    return {
-      score,
-      level: 'Medium',
-      actionRequired: 'Apply specific administrative controls, Toolbox Talk, and verify PPE compliance; monitor work closely.',
-      permitRequired: false,
-    };
-  }
+}
+
+function classifyRisk(score: number, matrix: RiskMatrixConfig): RiskLevelCategory {
+  if (score >= matrix.criticalMin) return 'Critical';
+  if (score >= matrix.highMin) return 'High';
+  if (score >= matrix.mediumMin) return 'Medium';
+  return 'Low';
+}
+
+/**
+ * Calculates an illustrative 5x5 score. It deliberately does NOT decide
+ * whether a permit is required; permit triggers are task/site specific.
+ */
+export function calculateRiskScore(
+  likelihood: number,
+  severity: number,
+  matrix: RiskMatrixConfig = DEFAULT_TRAINING_RISK_MATRIX
+): RiskEvaluation {
+  validateMatrix(matrix);
+  const safeLikelihood = clampInteger(likelihood, 1, 5, 'Likelihood');
+  const safeSeverity = clampInteger(severity, 1, 5, 'Severity');
+  const score = safeLikelihood * safeSeverity;
+  const level = classifyRisk(score, matrix);
+
+  const actionRequired: Record<RiskLevelCategory, string> = {
+    Low: 'Maintain existing controls, follow site rules, and review if conditions change.',
+    Medium:
+      'Add or strengthen controls, brief affected workers, and have the responsible supervisor verify the controls before and during the task.',
+    High:
+      'Do not start or continue until a competent person reviews the assessment, strengthens controls, and confirms the site-defined authorization requirements.',
+    Critical:
+      'Stop or do not start the activity, move people away from immediate danger, and escalate for competent review before work is reconsidered.',
+  };
+
   return {
     score,
-    level: 'Low',
-    actionRequired: 'Acceptable with standard site rules, routine supervision, and basic mandatory PPE.',
-    permitRequired: false,
+    level,
+    actionRequired: actionRequired[level],
+    permitRequired: null,
+    permitAssessment:
+      'Not determined by the numeric score. Check task-specific permit triggers and the approved employer/site Permit to Work procedure.',
   };
 }
 
 /**
- * Validates that residual risk is lower than initial risk and checks Hierarchy of Controls effectiveness.
+ * Validates numerical reduction AND an illustrative residual-risk acceptance
+ * rule. `isValid` means valid for this training exercise only, not real-work
+ * authorization. Site procedures and competent approval always take priority.
  */
 export function validateResidualRiskReduction(
   initialLikelihood: number,
   initialSeverity: number,
   residualLikelihood: number,
   residualSeverity: number,
-  selectedControlTier: 'Elimination' | 'Substitution' | 'Engineering Controls' | 'Administrative Controls' | 'PPE'
-): {
-  isValid: boolean;
-  initialScore: number;
-  residualScore: number;
-  reductionPercent: number;
-  feedback: string;
-} {
-  const initial = calculateRiskScore(initialLikelihood, initialSeverity);
-  const residual = calculateRiskScore(residualLikelihood, residualSeverity);
-
-  if (residual.score >= initial.score) {
-    return {
-      isValid: false,
-      initialScore: initial.score,
-      residualScore: residual.score,
-      reductionPercent: 0,
-      feedback: 'Residual risk score must be strictly lower than initial risk score after applying additional controls.',
-    };
+  selectedControlTier: ControlTier,
+  policy: ResidualRiskPolicy = {}
+): ResidualRiskValidation {
+  const matrix = policy.matrix ?? DEFAULT_TRAINING_RISK_MATRIX;
+  const accepted = policy.acceptedResidualLevels ?? ['Low', 'Medium'];
+  if (!accepted.length) {
+    throw new RangeError('At least one accepted residual risk level must be configured.');
   }
 
-  const reductionPercent = Math.round(((initial.score - residual.score) / initial.score) * 100);
+  const initial = calculateRiskScore(initialLikelihood, initialSeverity, matrix);
+  const residual = calculateRiskScore(residualLikelihood, residualSeverity, matrix);
+  const reduced = residual.score < initial.score;
+  const residualAccepted = accepted.includes(residual.level);
+  const ppeOnlyForHighRisk =
+    selectedControlTier === 'PPE' && (initial.level === 'High' || initial.level === 'Critical');
+  const requiresSiteReview =
+    !residualAccepted || residual.level === 'High' || residual.level === 'Critical' || ppeOnlyForHighRisk;
+  const isValid = reduced && residualAccepted && !ppeOnlyForHighRisk;
+  const reductionPercent = reduced
+    ? Math.round(((initial.score - residual.score) / initial.score) * 100)
+    : 0;
 
-  let tierComment = '';
-  if (selectedControlTier === 'PPE' && initial.score >= 12) {
-    tierComment = 'Warning: Relying solely on PPE for High/Critical risk violates the Hierarchy of Controls. Combine with Engineering or Administrative barriers.';
-  } else if (selectedControlTier === 'Elimination' || selectedControlTier === 'Engineering Controls') {
-    tierComment = 'Strong control selection: Higher-tier physical/engineering barriers provide reliable risk reduction.';
+  let feedback: string;
+  if (!reduced) {
+    feedback = 'Not accepted: residual risk must be numerically lower than the initial risk.';
+  } else if (ppeOnlyForHighRisk) {
+    feedback =
+      'Not accepted for this exercise: PPE alone is not an adequate primary response to an initially High/Critical risk. Select higher-level controls and reassess.';
+  } else if (!residualAccepted) {
+    feedback = `Not accepted for this exercise: residual risk remains ${residual.level}. Further controls and competent site review are required.`;
   } else {
-    tierComment = 'Acceptable control progression; ensure site supervision verifies compliance.';
+    feedback = `Training check passed: risk score reduced by ${reductionPercent}% (${initial.level} ${initial.score} → ${residual.level} ${residual.score}). This is not workplace authorization; follow the approved site acceptance criteria.`;
   }
 
   return {
-    isValid: true,
+    isValid,
     initialScore: initial.score,
     residualScore: residual.score,
     reductionPercent,
-    feedback: `Risk reduced by ${reductionPercent}% (${initial.level} ${initial.score} → ${residual.level} ${residual.score}). ${tierComment}`,
+    initialLevel: initial.level,
+    residualLevel: residual.level,
+    requiresSiteReview,
+    feedback,
   };
 }
 
+function validScores(scores: number[]): number[] {
+  return scores.filter((score) => Number.isFinite(score) && score >= 0 && score <= 100);
+}
+
+function averageScore(scores: number[]): number {
+  const safe = validScores(scores);
+  if (!safe.length) return 0;
+  return Math.round(safe.reduce((total, score) => total + score, 0) / safe.length);
+}
+
 /**
- * 2. Meaningful HSE Readiness Score Calculation
- * Weighted across actual assessment performance, not just lesson completion.
+ * A conservative learning indicator. Record counts alone never earn assessment
+ * points. Risk and documentation scores are counted only when their quality
+ * has actually been evaluated and supplied in the corresponding score arrays.
  */
 export function computeReadinessBreakdown(input: ReadinessInput): ReadinessBreakdown {
-  const avgQuiz =
-    input.quizScores.length > 0
-      ? Math.round(input.quizScores.reduce((a, b) => a + b, 0) / input.quizScores.length)
-      : 0;
+  const quiz = averageScore(input.quizScores ?? []);
+  const risk = averageScore(input.riskAssessmentScores ?? []);
+  const practical = averageScore(input.hazardScenariosScores ?? []);
+  const interview = averageScore(input.interviewScores ?? []);
+  const documentation = averageScore(input.documentScores ?? []);
 
-  const riskScore = Math.min(100, input.riskAssessmentsCompleted * 35);
+  const completed = clampInteger(input.completedLessonsCount, 0, Number.MAX_SAFE_INTEGER, 'Completed lessons');
+  const total = clampInteger(input.totalLessonsCount, 0, Number.MAX_SAFE_INTEGER, 'Total lessons');
+  const completion = total > 0 ? Math.min(100, Math.round((completed / total) * 100)) : 0;
 
-  const avgHazard =
-    input.hazardScenariosScores.length > 0
-      ? Math.round(input.hazardScenariosScores.reduce((a, b) => a + b, 0) / input.hazardScenariosScores.length)
-      : 0;
+  const evidenceDomains = [
+    validScores(input.quizScores ?? []).length > 0,
+    validScores(input.riskAssessmentScores ?? []).length > 0,
+    validScores(input.hazardScenariosScores ?? []).length > 0,
+    validScores(input.interviewScores ?? []).length > 0,
+    validScores(input.documentScores ?? []).length > 0,
+  ];
+  const evidenceCount = evidenceDomains.filter(Boolean).length;
+  const evidenceCoverage = Math.round((evidenceCount / evidenceDomains.length) * 100);
+  const isAssessmentComplete = evidenceCount === evidenceDomains.length;
 
-  const avgInterview =
-    input.interviewScores.length > 0
-      ? Math.round(input.interviewScores.reduce((a, b) => a + b, 0) / input.interviewScores.length)
-      : 0;
-
-  const docScore = Math.min(100, Math.round((input.documentsCompleted / 4) * 100));
-
-  const completionScore =
-    input.totalLessonsCount > 0
-      ? Math.min(100, Math.round((input.completedLessonsCount / input.totalLessonsCount) * 100))
-      : 0;
-
-  // Weighted composite readiness score
   const overallReadinessScore = Math.round(
-    avgQuiz * 0.25 +
-      riskScore * 0.15 +
-      avgHazard * 0.20 +
-      avgInterview * 0.20 +
-      docScore * 0.10 +
-      completionScore * 0.10
+    quiz * 0.2 + risk * 0.2 + practical * 0.2 + interview * 0.15 + documentation * 0.15 + completion * 0.1
   );
 
   let readinessBand: ReadinessBreakdown['readinessBand'] = 'Foundation Stage';
-  if (overallReadinessScore >= 80) readinessBand = 'Site & Interview Ready';
-  else if (overallReadinessScore >= 60) readinessBand = 'Field Competent';
-  else if (overallReadinessScore >= 35) readinessBand = 'Developing Officer';
+  if (overallReadinessScore >= 80 && isAssessmentComplete) {
+    readinessBand = 'Site & Interview Ready';
+  } else if (overallReadinessScore >= 60 && isAssessmentComplete) {
+    readinessBand = 'Field Competent';
+  } else if (overallReadinessScore >= 35 || evidenceCount >= 2) {
+    readinessBand = 'Developing Officer';
+  }
 
   const weakAreas: string[] = [];
-  if (avgQuiz < 70) weakAreas.push('Technical HSE Knowledge Quizzes');
-  if (riskScore < 60) weakAreas.push('5x5 Risk Assessment & ALARP Practice');
-  if (avgHazard < 70) weakAreas.push('Field Hazard Identification & Hierarchy of Controls');
-  if (avgInterview < 70) weakAreas.push('Structured English Interview Communication');
-  if (docScore < 50) weakAreas.push('Site Safety Documentation (PTW, JSA, TBT)');
+  if (!evidenceDomains[0] || quiz < 70) weakAreas.push('Technical HSE Knowledge Quizzes');
+  if (!evidenceDomains[1] || risk < 70) weakAreas.push('Evaluated Risk Assessment Quality & ALARP Practice');
+  if (!evidenceDomains[2] || practical < 70) weakAreas.push('Field Hazard Identification & Hierarchy of Controls');
+  if (!evidenceDomains[3] || interview < 70) weakAreas.push('Structured HSE Interview Communication');
+  if (!evidenceDomains[4] || documentation < 70) weakAreas.push('Evaluated Safety Documentation Quality (PTW/JSA/TBT)');
 
   return {
-    technicalKnowledge: avgQuiz,
-    riskAssessment: riskScore,
-    practicalSkills: avgHazard,
-    interviewCommunication: avgInterview,
-    documentation: docScore,
-    overallCompletion: completionScore,
+    technicalKnowledge: quiz,
+    riskAssessment: risk,
+    practicalSkills: practical,
+    interviewCommunication: interview,
+    documentation,
+    overallCompletion: completion,
     overallReadinessScore,
     readinessBand,
     weakAreas,
+    evidenceCoverage,
+    isAssessmentComplete,
+    readinessDisclaimer:
+      'Educational progress indicator only. It is not a professional certification, statutory license, proof of field competence, or guarantee of employment.',
   };
 }
 
+const STOP_WORDS = new Set([
+  'a', 'an', 'and', 'are', 'as', 'at', 'be', 'before', 'by', 'for', 'from', 'in', 'into',
+  'is', 'it', 'of', 'on', 'or', 'the', 'their', 'this', 'to', 'with', 'your', 'you',
+]);
+
+function tokens(value: string): string[] {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 2 && !STOP_WORDS.has(word));
+}
+
+function criterionCovered(answerTokens: Set<string>, criterion: string): boolean {
+  const criterionTokens = [...new Set(tokens(criterion))];
+  if (!criterionTokens.length) return false;
+  const matches = criterionTokens.filter((word) => answerTokens.has(word)).length;
+  const required = Math.max(1, Math.ceil(criterionTokens.length * 0.6));
+  return matches >= required;
+}
+
 /**
- * 3. Deterministic Structured Rubric Evaluator for Mock Interview Answers
+ * Transparent, deterministic fallback. It is a practice aid, not semantic AI
+ * and not proof that an answer is safe, lawful, or contextually correct.
  */
 export function evaluateInterviewAnswerRubric(
   userAnswer: string,
   expectedKeyPoints: string[]
 ): InterviewEvaluationResult {
-  const clean = userAnswer.trim();
-  const words = clean.split(/\s+/).filter(Boolean);
-  const lower = clean.toLowerCase();
+  const clean = typeof userAnswer === 'string' ? userAnswer.trim() : '';
+  const answerTokens = new Set(tokens(clean));
+  const wordCount = clean ? clean.split(/\s+/).filter(Boolean).length : 0;
+  const criteria = (expectedKeyPoints ?? []).filter((point) => typeof point === 'string' && point.trim());
+  const matchedPoints = criteria.filter((point) => criterionCovered(answerTokens, point));
+  const missingPoints = criteria.filter((point) => !criterionCovered(answerTokens, point));
+  const coverage = criteria.length ? matchedPoints.length / criteria.length : 0;
 
-  if (words.length < 5) {
+  if (wordCount < 5) {
     return {
       overallScore: 18,
       competencies: {
@@ -239,85 +355,46 @@ export function evaluateInterviewAnswerRubric(
         communicationClarity: 25,
         professionalStructure: 20,
       },
-      strengths: ['Attempted response submission'],
-      missingPoints: expectedKeyPoints,
+      strengths: ['You attempted the response.'],
+      missingPoints: criteria,
       improvementAreas: [
-        'Provide a complete 3-part professional answer (Immediate Action, Technical Control, Reporting/Verification).',
-        'Use accurate HSE terminology such as Hazard, Risk, Hierarchy of Controls, PTW, and Stop Work Authority.',
+        'Give a complete answer: immediate action, technical controls, verification, and reporting.',
+        'Use accurate HSE terminology and explain how it applies to the described situation.',
+        'This rule-based score is an approximate practice aid, not a semantic safety assessment.',
       ],
       evaluationSource: 'rubric_fallback',
     };
   }
 
-  // Check how many expected key points or keywords appear
-  const matchedPoints: string[] = [];
-  const missingPoints: string[] = [];
-
-  for (const point of expectedKeyPoints) {
-    const keywords = point
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, '')
-      .split(/\s+/)
-      .filter((w) => w.length > 3);
-    const hit = keywords.some((kw) => lower.includes(kw));
-    if (hit) {
-      matchedPoints.push(point);
-    } else {
-      missingPoints.push(point);
-    }
-  }
-
-  const coverageRatio = expectedKeyPoints.length > 0 ? matchedPoints.length / expectedKeyPoints.length : 0.5;
-
-  // Check practical decision-making indicators
-  const actionVerbs = ['stop', 'inspect', 'isolate', 'verify', 'report', 'barricade', 'permit', 'control', 'assess', 'communicate', 'rescue', 'evacuate'];
-  const actionHits = actionVerbs.filter((v) => lower.includes(v)).length;
-
-  // Check structure indicators
-  const structureMarkers = ['first', 'second', 'finally', 'because', 'therefore', 'example', 'ensure', 'immediately'];
-  const structureHits = structureMarkers.filter((m) => lower.includes(m)).length;
-
-  const technicalAccuracy = Math.min(98, Math.round(45 + coverageRatio * 50));
-  const relevantSafetyKnowledge = Math.min(98, Math.round(40 + coverageRatio * 45 + Math.min(13, actionHits * 4)));
-  const answerCompleteness = Math.min(98, Math.round(30 + Math.min(40, words.length * 0.9) + coverageRatio * 28));
-  const practicalDecisionMaking = Math.min(98, Math.round(40 + Math.min(45, actionHits * 11) + coverageRatio * 13));
-  const communicationClarity = Math.min(96, Math.round(50 + Math.min(30, words.length * 0.6) + Math.min(16, structureHits * 5)));
-  const professionalStructure = Math.min(96, Math.round(45 + Math.min(35, structureHits * 9) + (words.length >= 25 ? 16 : 5)));
-
-  const overallScore = Math.round(
-    (technicalAccuracy +
-      relevantSafetyKnowledge +
-      answerCompleteness +
-      practicalDecisionMaking +
-      communicationClarity +
-      professionalStructure) /
-      6
+  const actionWords = [
+    'stop', 'inspect', 'isolate', 'verify', 'report', 'barricade', 'control', 'assess',
+    'communicate', 'evacuate', 'secure', 'notify', 'review', 'monitor', 'prevent',
+  ];
+  const structureWords = ['first', 'second', 'finally', 'because', 'therefore', 'example', 'ensure', 'immediately'];
+  const actionHits = actionWords.filter((word) => answerTokens.has(word)).length;
+  const structureHits = structureWords.filter((word) => answerTokens.has(word)).length;
+  const technicalAccuracy = Math.min(90, Math.round(35 + coverage * 55));
+  const relevantSafetyKnowledge = Math.min(90, Math.round(30 + coverage * 50 + Math.min(10, actionHits * 2)));
+  const answerCompleteness = Math.min(90, Math.round(25 + coverage * 45 + Math.min(20, wordCount * 0.35)));
+  const practicalDecisionMaking = Math.min(90, Math.round(30 + coverage * 35 + Math.min(25, actionHits * 5)));
+  const communicationClarity = Math.min(90, Math.round(40 + Math.min(30, wordCount * 0.5) + Math.min(15, structureHits * 3)));
+  const professionalStructure = Math.min(90, Math.round(30 + Math.min(45, structureHits * 9) + (wordCount >= 30 ? 10 : 0)));
+  const rawAverage = Math.round(
+    (technicalAccuracy + relevantSafetyKnowledge + answerCompleteness + practicalDecisionMaking + communicationClarity + professionalStructure) / 6
   );
+  const overallScore = Math.min(85, rawAverage);
 
   const strengths: string[] = [];
-  if (matchedPoints.length > 0) {
-    strengths.push(`Addressed ${matchedPoints.length} of ${expectedKeyPoints.length} core technical safety criteria.`);
-  }
-  if (actionHits >= 2) {
-    strengths.push('Demonstrated decisive field action orientation (e.g., inspecting, isolating, verifying controls).');
-  }
-  if (words.length >= 30) {
-    strengths.push('Provided substantive detail suitable for an international panel interview.');
-  }
-  if (strengths.length === 0) {
-    strengths.push('Clear intent to address workplace safety responsibility.');
-  }
+  if (matchedPoints.length) strengths.push(`Addressed ${matchedPoints.length} of ${criteria.length} listed technical criteria by keyword coverage.`);
+  if (actionHits >= 3) strengths.push('Included several practical action terms.');
+  if (structureHits >= 2) strengths.push('Used some sequence or explanation markers.');
+  if (!strengths.length) strengths.push('Submitted a response for review.');
 
   const improvementAreas: string[] = [];
-  if (missingPoints.length > 0) {
-    improvementAreas.push(`Incorporate missing technical elements: ${missingPoints.slice(0, 2).join('; ')}.`);
-  }
-  if (structureHits < 2) {
-    improvementAreas.push('Structure your answer using Situation → Immediate Control → Long-Term Prevention.');
-  }
-  if (words.length < 30) {
-    improvementAreas.push('Expand your explanation with a concrete industrial site example.');
-  }
+  if (missingPoints.length) improvementAreas.push(`Review these criteria: ${missingPoints.slice(0, 3).join('; ')}.`);
+  if (actionHits < 2) improvementAreas.push('Explain specific safe actions, control verification, and escalation steps.');
+  if (structureHits < 2) improvementAreas.push('Structure the answer as Situation → Immediate Action → Controls → Verification/Reporting.');
+  improvementAreas.push('Rule-based fallback is approximate and cannot verify context, law, or real-world competency.');
 
   return {
     overallScore,
@@ -336,9 +413,6 @@ export function evaluateInterviewAnswerRubric(
   };
 }
 
-/**
- * 4. Generates a Personalized Learning Plan from Onboarding Answers
- */
 export function generatePersonalizedPlan(prefs: OnboardingPreferences): {
   recommendedStartingPhase: number;
   weeklyLessonsTarget: number;
@@ -346,17 +420,17 @@ export function generatePersonalizedPlan(prefs: OnboardingPreferences): {
   coachWelcomeNote: string;
 } {
   const recommendedStartingPhase = prefs.experienceLevel === 'Experienced' ? 2 : 1;
-  const weeklyLessonsTarget = Math.max(3, Math.round((prefs.dailyMinutes * 7) / 20));
-
-  const focusTracks: string[] = [
-    'Phase 1–2: Core HSE Foundations & High-Risk Permits (PTW, WAH, Confined Space, LOTO)',
-    'Phase 3: Practical Site Inspections, Toolbox Talks & Incident Investigation',
+  const safeDailyMinutes = clampInteger(prefs.dailyMinutes, 15, 180, 'Daily minutes');
+  const weeklyLessonsTarget = Math.max(3, Math.round((safeDailyMinutes * 7) / 20));
+  const focusTracks = [
+    'Phase 1–2: HSE foundations, risk assessment, and high-risk work controls (PTW, WAH, confined space, LOTO).',
+    'Phase 3: Site inspections, toolbox talks, incident reporting, and practical communication.',
   ];
 
   if (prefs.englishLevel === 'Basic' || prefs.preferredLanguage === 'Roman Urdu') {
-    focusTracks.push('Bilingual English + Roman Urdu Concept Mastery & Spoken English Interview Drills');
+    focusTracks.push('Bilingual English + Roman Urdu concept mastery and spoken interview practice.');
   } else {
-    focusTracks.push('Gulf & Multinational Contractor Situational Panel Interview Mastery');
+    focusTracks.push('Technical English, situational judgement, and structured interview practice.');
   }
 
   return {
@@ -365,7 +439,7 @@ export function generatePersonalizedPlan(prefs: OnboardingPreferences): {
     focusTracks,
     coachWelcomeNote:
       prefs.preferredLanguage === 'Roman Urdu'
-        ? `Welcome! Aapka ${prefs.dailyMinutes}-minute daily plan tayyar hai. Hum English technical terms ke sath Roman Urdu explanation use karenge taake aap interview mein full confidence se jawab dein.`
-        : `Your ${prefs.dailyMinutes}-minute daily site-readiness schedule is active. Focus on mastering the Hierarchy of Controls and practical scenario articulation.`,
+        ? `Aapka ${safeDailyMinutes}-minute daily learning plan tayyar hai. English technical terms ke sath Roman Urdu explanations aur practical examples use karein.`
+        : `Your ${safeDailyMinutes}-minute daily HSE learning plan is ready. Focus on practical controls, evidence-based learning, and clear interview communication.`,
   };
 }
